@@ -5,6 +5,10 @@ export async function run_caddy_file_process({
     caddy_file_text: string;
     signal?: AbortSignal;
 }) {
+
+if (signal?.aborted) {
+    return Promise.reject(new DOMException(" aborted.", "AbortError"));
+  }
     const pingport = find_an_available_port("127.0.0.1");
     const process = Deno.run({
         cmd: [
