@@ -2,9 +2,9 @@ import { find_an_available_port } from "./find_an_available_port.ts";
 
 export async function start_child_server_process({
     hostname = "127.0.0.1",
-    port,
+    port,cmd,
     signal,
-}: {
+}: {cmd:string[]
     hostname?: string;
     port: number;
     signal?: AbortSignal;
@@ -15,15 +15,7 @@ if (signal?.aborted) {
     const pingport = find_an_available_port("127.0.0.1");
 
     const process = Deno.run({
-        cmd: [
-            "deno",
-            "run",
-            "-A",
-            "./hello-world-server.ts",
-            `--hostname=${hostname}`,
-            `--port=${port}`,
-            "--pingback=127.0.0.1:" + pingport,
-        ],
+        cmd: cmd,
     });
     const listener = Deno.listen({ hostname: "127.0.0.1", port: pingport });
     signal?.addEventListener("abort", () => {
