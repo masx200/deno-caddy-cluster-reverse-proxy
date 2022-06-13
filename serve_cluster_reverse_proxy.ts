@@ -13,16 +13,10 @@ export async function serve_cluster_reverse_proxy({
     allowed_server_names = [],
     port,
     thread_count = navigator.hardwareConcurrency,
-    start_child_server_process,
+  
     signal,
 }: {
-    start_run_caddy_file?({
-        caddy_file_text,
-        signal,
-    }: {
-        caddy_file_text: string;
-        signal?: AbortSignal;
-    }): Promise<Deno.Process>;
+   
     onListen?:
         | ((params: { hostname: string; port: number }) => void)
         | undefined;
