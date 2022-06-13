@@ -2,8 +2,10 @@
 
 deno-caddy-cluster-reverse-proxy
 
-使用deno,根据需要的服务子进程数量(默认为cpu个数),找到任意空闲的端口,然后启动子进程开启服务进程集群,使用caddy进行反向代理.适用于服务进程是单进程服务,比如说node或者deno.支持https.
+使用`deno`,根据需要的服务子进程数量(默认为`cpu`个数),找到任意空闲的端口,然后启动子进程开启服务进程集群,使用`caddy`进行反向代理.适用于服务进程是单进程服务,比如说`node`或者`deno`.支持`https`和`http`.
 
 https://deno.land/
 
 https://caddyserver.com/
+
+`serve_cluster_reverse_proxy`:启动集群反向代理服务
