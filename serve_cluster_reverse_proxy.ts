@@ -13,15 +13,21 @@ export async function serve_cluster_reverse_proxy({
     allowed_server_names = [],
     port,
     thread_count = navigator.hardwareConcurrency,
-    get_cmd,
+    get_run_options,
     signal,
 }: {
-    get_cmd: (options: {
+    get_run_options: (options: {
         hostname: string;
         port: number;
         pingport: number;
         pinghost: string;
-    }) => string[];
+    }) => {
+        cmd: string[];
+        cwd?: string;
+        env?: {
+            [key: string]: string;
+        };
+    };
     onListen?:
         | ((params: { hostname: string; port: number }) => void)
         | undefined;
@@ -70,7 +76,12 @@ export async function serve_cluster_reverse_proxy({
             start_run_caddy_file({ caddy_file_text, signal }),
 
             ...ports.map((port) =>
-                start_child_server_process({ hostname, port, signal, get_cmd })
+                start_child_server_process({
+                    hostname,
+                    port,
+                    signal,
+                    get_run_options,
+                })
             ),
         ]),
         AbortSignalPromisify(signal),

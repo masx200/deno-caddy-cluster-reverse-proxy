@@ -12,16 +12,18 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: ["localhost"],
-            get_cmd({ hostname, port, pinghost, pingport }) {
-                return [
-                    "deno",
-                    "run",
-                    "-A",
-                    "./hello-world-server.ts",
-                    `--hostname=${hostname}`,
-                    `--port=${port}`,
-                    `--pingback=${pinghost}:` + pingport,
-                ];
+            get_run_options({ hostname, port, pinghost, pingport }) {
+                return {
+                    cmd: [
+                        "deno",
+                        "run",
+                        "-A",
+                        "./hello-world-server.ts",
+                        `--hostname=${hostname}`,
+                        `--port=${port}`,
+                        `--pingback=${pinghost}:` + pingport,
+                    ],
+                };
             },
             port: 28000,
             hostname: "127.0.0.1",
@@ -66,16 +68,18 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: [],
-            get_cmd({ hostname, port, pinghost, pingport }) {
-                return [
-                    "deno",
-                    "run",
-                    "-A",
-                    "./hello-world-server.ts",
-                    `--hostname=${hostname}`,
-                    `--port=${port}`,
-                    `--pingback=${pinghost}:` + pingport,
-                ];
+            get_run_options({ hostname, port, pinghost, pingport }) {
+                return {
+                    cmd: [
+                        "deno",
+                        "run",
+                        "-A",
+                        "./hello-world-server.ts",
+                        `--hostname=${hostname}`,
+                        `--port=${port}`,
+                        `--pingback=${pinghost}:` + pingport,
+                    ],
+                };
             },
             port: 28000,
             hostname: "127.0.0.1",

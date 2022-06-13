@@ -4,15 +4,21 @@ import { find_an_available_port } from "./find_an_available_port.ts";
 export async function start_child_server_process({
     hostname = "127.0.0.1",
     port,
-    get_cmd,
+    get_run_options,
     signal,
 }: {
-    get_cmd: (options: {
+    get_run_options: (options: {
         hostname: string;
         port: number;
         pingport: number;
         pinghost: string;
-    }) => string[];
+    }) => {
+        cmd: string[];
+        cwd?: string;
+        env?: {
+            [key: string]: string;
+        };
+    };
     hostname?: string;
     port: number;
     signal?: AbortSignal;
@@ -32,7 +38,7 @@ export async function start_child_server_process({
             "--pingback=127.0.0.1:" + pingport,
         ]*/
     const process = Deno.run({
-        cmd: get_cmd({ hostname, port, pingport, pinghost }),
+        ...get_run_options({ hostname, port, pingport, pinghost }),
     });
     const listener = Deno.listen({ hostname: "127.0.0.1", port: pingport });
     signal?.addEventListener("abort", () => {
