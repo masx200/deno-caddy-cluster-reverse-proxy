@@ -59,7 +59,14 @@ Deno.test(
             port: 28000,
             hostname: "127.0.0.1",
             signal,
-            async onListen() {
+           async onListen({port,
+        hostname,
+    }: {
+        hostname: string;
+        port: number;
+    }) {
+console.log(`Listening on http://${hostname}:${port}`);
+       
                 const base = "http://127.0.0.1:28000";
                 const urls = Array(10)
                     .fill(0)
