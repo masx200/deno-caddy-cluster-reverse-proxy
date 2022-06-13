@@ -1,0 +1,12 @@
+{
+    "tasks": {
+        "check": " deno check --remote --unstable ./mod.ts",
+        "test": "deno test -A "
+    },
+    "fmt": {
+        "options": {
+            "indentWidth": 4,
+            "singleQuote": false
+        }
+    }
+}
