@@ -12,7 +12,7 @@ https://caddyserver.com/
 
 适用于`Deno` 
 
-https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy
+https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy/mod.ts
 
 查看例子:
 
