@@ -3,7 +3,7 @@ import { caddy_file_reverse_proxy_template } from "./caddy_file_reverse_proxy_te
 import { find_an_available_port } from "./find_an_available_port.ts";
 import { run_caddy_file } from "./run_caddy_file.ts";
 
-export async function serve({
+export async function serve_cluster_reverse_proxy({
     hostname = "127.0.0.1",
     from_protocol = "http:",
     to_protocol = "http:",
