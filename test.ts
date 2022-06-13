@@ -17,6 +17,7 @@ Deno.test(
             hostname: "127.0.0.1",
             signal,
         });
+        await delay(3000);
         const base = "http://localhost:28000";
         const urls = Array(10)
             .fill(0)
@@ -35,6 +36,7 @@ Deno.test(
         await p;
     },
 );
+import { delay } from "https://deno.land/std@0.143.0/async/delay.ts";
 Deno.test(
     "http-hello-world-reverse-proxy-allowed_server_names-empty",
     async () => {
@@ -47,6 +49,7 @@ Deno.test(
             hostname: "127.0.0.1",
             signal,
         });
+        await delay(3000);
         const base = "http://127.0.0.1:28000";
         const urls = Array(10)
             .fill(0)
