@@ -30,20 +30,20 @@ export async function serve_cluster_reverse_proxy({
     }
     assert(
         ["http:", "https:"].includes(from_protocol),
-        'protocol expected :["http:", "https:"]'
+        'protocol expected :["http:", "https:"]',
     );
     assert(
         ["http:", "https:"].includes(to_protocol),
-        'protocol expected :["http:", "https:"]'
+        'protocol expected :["http:", "https:"]',
     );
     const listener = Deno.listen({ hostname, port });
     listener.close();
     const from = allowed_server_names.length
         ? allowed_server_names.map((hostname) => ({
-              hostname,
-              port,
-              protocol: from_protocol,
-          }))
+            hostname,
+            port,
+            protocol: from_protocol,
+        }))
         : { port };
     const ports = Array(thread_count)
         .fill(0)
@@ -55,14 +55,25 @@ export async function serve_cluster_reverse_proxy({
     }));
     const caddy_file_text = caddy_file_reverse_proxy_template(from, to);
     console.log(caddy_file_text);
-    const caddy_process = await run_caddy_file(caddy_file_text);
+    // const caddy_process = await run_caddy_file(caddy_file_text);
+
+    const [caddy_process, children] = await Promise.all([
+        run_caddy_file(caddy_file_text),
+        Promise.all(
+            ports.map((port) => start_child_process({ hostname, port })),
+        ),
+    ]);
     console.log("child process caddy started");
+    signal?.addEventListener("abort", () => {
+        clean();
+    });
     if (signal?.aborted) {
+        clean();
         return;
     }
-    const children = await Promise.all(
-        ports.map((port) => start_child_process({ hostname, port }))
-    );
+    // const children = await Promise.all(
+    //     ports.map((port) => start_child_process({ hostname, port })),
+    // );
     const error_controller = new AbortController();
     caddy_process.status().then((status) => {
         caddy_process.close();
@@ -72,7 +83,7 @@ export async function serve_cluster_reverse_proxy({
         console.error("child process caddy exited", status);
         children.forEach((process) => process.close());
         error_controller.abort(
-            new Error("child process caddy exited:" + JSON.stringify(status))
+            new Error("child process caddy exited:" + JSON.stringify(status)),
         );
     });
     children.forEach(async (process, index) => {
@@ -85,12 +96,14 @@ export async function serve_cluster_reverse_proxy({
         }
         console.error(`child process port ${ports[index]} exited`, status);
     });
-    signal?.addEventListener("abort", () => {
+
+    function clean() {
         children.forEach((process) => process.close());
         caddy_process.close();
-    });
+    }
     return new Promise<void>((s, j) => {
         if (signal?.aborted) {
+            clean();
             return s();
         }
         if (error_controller.signal.aborted) {
@@ -100,6 +113,7 @@ export async function serve_cluster_reverse_proxy({
             return j(error_controller.signal.reason);
         });
         signal?.addEventListener("abort", () => {
+            clean();
             return s();
         });
     });
