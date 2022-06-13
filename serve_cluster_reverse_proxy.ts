@@ -6,7 +6,7 @@ import { run_caddy_file_process } from "./run_caddy_file_process.ts";
 
 export async function serve_cluster_reverse_proxy({
     onListen,
-    start_run_caddy_file = run_caddy_file_process,
+    
     hostname = "127.0.0.1",
     from_protocol = "http:",
     to_protocol = "http:",
@@ -33,15 +33,12 @@ export async function serve_cluster_reverse_proxy({
     port: number;
     thread_count?: number;
     signal?: AbortSignal;
-    start_child_server_process: (options: {
-        hostname: string;
-        port: number;
-        signal?: AbortSignal;
-    }) => Deno.Process | Promise<Deno.Process>;
+    
 }) {
     if (signal?.aborted) {
         return;
     }
+const start_run_caddy_file = run_caddy_file_process
     assert(
         ["http:", "https:"].includes(from_protocol),
         'protocol expected :["http:", "https:"]',
