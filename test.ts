@@ -25,7 +25,7 @@ Deno.test(
 console.log(`Listening on http://${hostname}:${port}`);
        
                 const base = "http://localhost:28000";
-                const urls = Array(10)
+                const urls = Array(5)
                     .fill(0)
                     .map(() => new URL(String(Math.random()), base));
                 const responses = await Promise.all(
@@ -68,7 +68,7 @@ Deno.test(
 console.log(`Listening on http://${hostname}:${port}`);
        
                 const base = "http://127.0.0.1:28000";
-                const urls = Array(10)
+                const urls = Array(4)
                     .fill(0)
                     .map(() => new URL(String(Math.random()), base));
                 const responses = await Promise.all(
