@@ -1,5 +1,5 @@
 import { serve_cluster_reverse_proxy } from "./serve_cluster_reverse_proxy.ts";
-import { start_child_process } from "./start_child_process.ts";
+import { start_child_server_process } from "./start_child_server_process.ts";
 import {
     assert,
     assertEquals,
@@ -12,7 +12,7 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: ["localhost"],
-            start_child_process,
+            start_child_server_process,
             port: 28000,
             hostname: "127.0.0.1",
             signal,
@@ -48,7 +48,7 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: [],
-            start_child_process,
+            start_child_server_process,
             port: 28000,
             hostname: "127.0.0.1",
             signal,

@@ -1,4 +1,5 @@
 import { assert } from "https://deno.land/std@0.143.0/testing/asserts.ts";
+import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { caddy_file_reverse_proxy_template } from "./caddy_file_reverse_proxy_template.ts";
 import { find_an_available_port } from "./find_an_available_port.ts";
 import { run_caddy_file_process } from "./run_caddy_file_process.ts";
@@ -12,10 +13,16 @@ export async function serve_cluster_reverse_proxy({
     allowed_server_names = [],
     port,
     thread_count = navigator.hardwareConcurrency,
-    start_child_process,
+    start_child_server_process,
     signal,
 }: {
-    start_run_caddy_file?(caddy_file_text: string): Promise<Deno.Process>;
+    start_run_caddy_file?({
+        caddy_file_text,
+        signal,
+    }: {
+        caddy_file_text: string;
+        signal?: AbortSignal;
+    }): Promise<Deno.Process>;
     onListen?:
         | ((params: { hostname: string; port: number }) => void)
         | undefined;
@@ -26,9 +33,10 @@ export async function serve_cluster_reverse_proxy({
     port: number;
     thread_count?: number;
     signal?: AbortSignal;
-    start_child_process: (options: {
+    start_child_server_process: (options: {
         hostname: string;
         port: number;
+        signal?: AbortSignal;
     }) => Deno.Process | Promise<Deno.Process>;
 }) {
     if (signal?.aborted) {
@@ -62,11 +70,15 @@ export async function serve_cluster_reverse_proxy({
     const caddy_file_text = caddy_file_reverse_proxy_template(from, to);
     console.log(caddy_file_text);
 
-    const [caddy_process, children] = await Promise.all([
-        start_run_caddy_file(caddy_file_text),
-        Promise.all(
-            ports.map((port) => start_child_process({ hostname, port })),
-        ),
+    const [caddy_process, ...children] = await Promise.race([
+        Promise.all([
+            start_run_caddy_file({ caddy_file_text, signal }),
+
+            ...ports.map((port) =>
+                start_child_server_process({ hostname, port, signal })
+            ),
+        ]),
+        AbortSignalPromisify(signal),
     ]);
     onListen?.({ hostname, port });
     const pendings: Promise<void>[] = [];
