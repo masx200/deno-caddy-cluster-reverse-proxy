@@ -9,3 +9,9 @@ https://deno.land/
 https://caddyserver.com/
 
 `serve_cluster_reverse_proxy`:启动集群反向代理服务
+
+查看例子:
+
+https://github.com/masx200/deno-caddy-cluster-reverse-proxy/blob/main/test.ts
+
+https://github.com/masx200/deno-caddy-cluster-reverse-proxy/blob/main/hello-world-server.ts
