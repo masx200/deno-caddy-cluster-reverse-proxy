@@ -1,9 +1,11 @@
 import { assert } from "https://deno.land/std@0.143.0/testing/asserts.ts";
 import { caddy_file_reverse_proxy_template } from "./caddy_file_reverse_proxy_template.ts";
 import { find_an_available_port } from "./find_an_available_port.ts";
-import { run_caddy_file } from "./run_caddy_file.ts";
+import { run_caddy_file_process } from "./run_caddy_file_process.ts";
 
 export async function serve_cluster_reverse_proxy({
+    onListen,
+    start_run_caddy_file = run_caddy_file_process,
     hostname = "127.0.0.1",
     from_protocol = "http:",
     to_protocol = "http:",
@@ -13,6 +15,10 @@ export async function serve_cluster_reverse_proxy({
     start_child_process,
     signal,
 }: {
+    start_run_caddy_file?(caddy_file_text: string): Promise<Deno.Process>;
+    onListen?:
+        | ((params: { hostname: string; port: number }) => void)
+        | undefined;
     from_protocol?: string;
     to_protocol?: string;
     allowed_server_names?: string[];
@@ -57,11 +63,12 @@ export async function serve_cluster_reverse_proxy({
     console.log(caddy_file_text);
 
     const [caddy_process, children] = await Promise.all([
-        run_caddy_file(caddy_file_text),
+        start_run_caddy_file(caddy_file_text),
         Promise.all(
             ports.map((port) => start_child_process({ hostname, port })),
         ),
     ]);
+    onListen?.({ hostname, port });
     const pendings: Promise<void>[] = [];
     async function clean() {
         // console.trace("clean1");
