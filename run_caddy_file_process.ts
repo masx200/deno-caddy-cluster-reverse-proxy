@@ -5,10 +5,9 @@ export async function run_caddy_file_process({
     caddy_file_text: string;
     signal?: AbortSignal;
 }) {
-
-if (signal?.aborted) {
-    return Promise.reject(new DOMException(" aborted.", "AbortError"));
-  }
+    if (signal?.aborted) {
+        return Promise.reject(new DOMException(" aborted.", "AbortError"));
+    }
     const pingport = find_an_available_port("127.0.0.1");
     const process = Deno.run({
         cmd: [
@@ -42,6 +41,7 @@ if (signal?.aborted) {
         );
         process.stdin.close();
         await Promise.race([
+            AbortSignalPromisify(signal),
             (async () => {
                 for await (const conn of listener) {
                     // console.log("conn", conn, conn.localAddr, conn.remoteAddr);
@@ -68,4 +68,5 @@ if (signal?.aborted) {
     }
 }
 import { writeAll } from "https://deno.land/std@0.143.0/streams/conversion.ts";
+import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { find_an_available_port } from "./find_an_available_port.ts";

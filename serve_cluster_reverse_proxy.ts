@@ -3,20 +3,25 @@ import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { caddy_file_reverse_proxy_template } from "./caddy_file_reverse_proxy_template.ts";
 import { find_an_available_port } from "./find_an_available_port.ts";
 import { run_caddy_file_process } from "./run_caddy_file_process.ts";
-import{start_child_server_process}from"./start_child_server_process.ts"
+import { start_child_server_process } from "./start_child_server_process.ts";
 export async function serve_cluster_reverse_proxy({
     onListen,
-    
+
     hostname = "127.0.0.1",
     from_protocol = "http:",
     to_protocol = "http:",
     allowed_server_names = [],
     port,
     thread_count = navigator.hardwareConcurrency,
-  
+    get_cmd,
     signal,
 }: {
-   
+    get_cmd: (options: {
+        hostname: string;
+        port: number;
+        pingport: number;
+        pinghost: string;
+    }) => string[];
     onListen?:
         | ((params: { hostname: string; port: number }) => void)
         | undefined;
@@ -27,12 +32,11 @@ export async function serve_cluster_reverse_proxy({
     port: number;
     thread_count?: number;
     signal?: AbortSignal;
-    
 }) {
     if (signal?.aborted) {
         return;
     }
-const start_run_caddy_file = run_caddy_file_process
+    const start_run_caddy_file = run_caddy_file_process;
     assert(
         ["http:", "https:"].includes(from_protocol),
         'protocol expected :["http:", "https:"]',
@@ -66,7 +70,7 @@ const start_run_caddy_file = run_caddy_file_process
             start_run_caddy_file({ caddy_file_text, signal }),
 
             ...ports.map((port) =>
-                start_child_server_process({ hostname, port, signal })
+                start_child_server_process({ hostname, port, signal, get_cmd })
             ),
         ]),
         AbortSignalPromisify(signal),

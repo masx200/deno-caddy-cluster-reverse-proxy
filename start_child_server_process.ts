@@ -1,19 +1,28 @@
+import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { find_an_available_port } from "./find_an_available_port.ts";
 
 export async function start_child_server_process({
     hostname = "127.0.0.1",
-    port,get_cmd,
+    port,
+    get_cmd,
     signal,
-}: {get_cmd:()=>string[]
+}: {
+    get_cmd: (options: {
+        hostname: string;
+        port: number;
+        pingport: number;
+        pinghost: string;
+    }) => string[];
     hostname?: string;
     port: number;
     signal?: AbortSignal;
 }) {
-if (signal?.aborted) {
-    return Promise.reject(new DOMException(" aborted.", "AbortError"));
-  }
+    if (signal?.aborted) {
+        return Promise.reject(new DOMException(" aborted.", "AbortError"));
+    }
+    const pinghost = "127.0.0.1";
     const pingport = find_an_available_port("127.0.0.1");
-/*[
+    /*[
             "deno",
             "run",
             "-A",
@@ -23,7 +32,7 @@ if (signal?.aborted) {
             "--pingback=127.0.0.1:" + pingport,
         ]*/
     const process = Deno.run({
-        cmd: get_cmd({hostname,port,pingport,pinghost}),
+        cmd: get_cmd({ hostname, port, pingport, pinghost }),
     });
     const listener = Deno.listen({ hostname: "127.0.0.1", port: pingport });
     signal?.addEventListener("abort", () => {
@@ -39,6 +48,7 @@ if (signal?.aborted) {
     });
     try {
         await Promise.race([
+            AbortSignalPromisify(signal),
             (async () => {
                 for await (const conn of listener) {
                     // console.log("conn", conn, conn.localAddr, conn.remoteAddr);

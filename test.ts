@@ -12,18 +12,29 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: ["localhost"],
-           
+            get_cmd({ hostname, port, pinghost, pingport }) {
+                return [
+                    "deno",
+                    "run",
+                    "-A",
+                    "./hello-world-server.ts",
+                    `--hostname=${hostname}`,
+                    `--port=${port}`,
+                    `--pingback=${pinghost}:` + pingport,
+                ];
+            },
             port: 28000,
             hostname: "127.0.0.1",
             signal,
-            async onListen({port,
-        hostname,
-    }: {
-        hostname: string;
-        port: number;
-    }) {
-console.log(`Listening on http://${hostname}:${port}`);
-       
+            async onListen({
+                port,
+                hostname,
+            }: {
+                hostname: string;
+                port: number;
+            }) {
+                console.log(`Listening on http://${hostname}:${port}`);
+
                 const base = "http://localhost:28000";
                 const urls = Array(5)
                     .fill(0)
@@ -55,18 +66,29 @@ Deno.test(
         const { signal } = controller;
         const p = serve_cluster_reverse_proxy({
             allowed_server_names: [],
-           
+            get_cmd({ hostname, port, pinghost, pingport }) {
+                return [
+                    "deno",
+                    "run",
+                    "-A",
+                    "./hello-world-server.ts",
+                    `--hostname=${hostname}`,
+                    `--port=${port}`,
+                    `--pingback=${pinghost}:` + pingport,
+                ];
+            },
             port: 28000,
             hostname: "127.0.0.1",
             signal,
-           async onListen({port,
-        hostname,
-    }: {
-        hostname: string;
-        port: number;
-    }) {
-console.log(`Listening on http://${hostname}:${port}`);
-       
+            async onListen({
+                port,
+                hostname,
+            }: {
+                hostname: string;
+                port: number;
+            }) {
+                console.log(`Listening on http://${hostname}:${port}`);
+
                 const base = "http://127.0.0.1:28000";
                 const urls = Array(4)
                     .fill(0)
