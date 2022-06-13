@@ -9,6 +9,9 @@ export async function start_child_server_process({
     port: number;
     signal?: AbortSignal;
 }) {
+if (signal?.aborted) {
+    return Promise.reject(new DOMException(" aborted.", "AbortError"));
+  }
     const pingport = find_an_available_port("127.0.0.1");
 
     const process = Deno.run({
