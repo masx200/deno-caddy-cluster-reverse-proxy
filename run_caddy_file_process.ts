@@ -37,11 +37,21 @@ export async function run_caddy_file_process({
             new TextEncoder().encode(caddy_file_text),
         );
         process.stdin.close();
-        for await (const conn of listener) {
-            // console.log("conn", conn, conn.localAddr, conn.remoteAddr);
-            conn.close();
-            break;
-        }
+        await Promise.race([
+            (async () => {
+                for await (const conn of listener) {
+                    // console.log("conn", conn, conn.localAddr, conn.remoteAddr);
+                    conn.close();
+                    break;
+                }
+            })(),
+            (async () => {
+                const status = await process.status();
+                if (!status.success) {
+                    throw Error("process failure:" + JSON.stringify(status));
+                }
+            })(),
+        ]);
 
         return process;
     } catch (error) {
