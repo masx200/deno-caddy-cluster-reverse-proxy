@@ -10,7 +10,7 @@ https://caddyserver.com/
 
 `serve_cluster_reverse_proxy`:启动集群反向代理服务
 
-适用于`Deno` 
+适用于`Deno`
 
 https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy/mod.ts
 
