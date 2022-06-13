@@ -15,7 +15,7 @@ export function handler(req: Request, connInfo: ConnInfo): Response {
     const response = new Response("hello_world:" + req.url, {
         headers: { "content-type": "text/html" },
     });
-    console.log("response", response);
+    // console.log("response", response);
     return response;
 }
 if (import.meta.main) {

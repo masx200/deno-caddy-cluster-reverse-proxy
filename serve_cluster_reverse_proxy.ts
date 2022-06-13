@@ -55,7 +55,6 @@ export async function serve_cluster_reverse_proxy({
     }));
     const caddy_file_text = caddy_file_reverse_proxy_template(from, to);
     console.log(caddy_file_text);
-    // const caddy_process = await run_caddy_file(caddy_file_text);
 
     const [caddy_process, children] = await Promise.all([
         run_caddy_file(caddy_file_text),
@@ -63,58 +62,94 @@ export async function serve_cluster_reverse_proxy({
             ports.map((port) => start_child_process({ hostname, port })),
         ),
     ]);
-    console.log("child process caddy started");
-    signal?.addEventListener("abort", () => {
-        clean();
-    });
-    if (signal?.aborted) {
-        clean();
-        return;
-    }
-    // const children = await Promise.all(
-    //     ports.map((port) => start_child_process({ hostname, port })),
-    // );
-    const error_controller = new AbortController();
-    caddy_process.status().then((status) => {
-        caddy_process.close();
-        if (signal?.aborted) {
-            return;
-        }
-        console.error("child process caddy exited", status);
-        children.forEach((process) => process.close());
-        error_controller.abort(
-            new Error("child process caddy exited:" + JSON.stringify(status)),
-        );
-    });
-    children.forEach(async (process, index) => {
-        const child_port = ports[index];
-        console.log(["child process port", child_port, "started"].join(" "));
-        const status = await process.status();
-        process.close();
-        if (signal?.aborted) {
-            return;
-        }
-        console.error(`child process port ${ports[index]} exited`, status);
-    });
+    const pendings: Promise<void>[] = [];
+    async function clean() {
+        // console.trace("clean1");
+        children.forEach((process) => {
+            try {
+                process.kill("SIGKILL");
+                process.close();
+                // deno-lint-ignore no-empty
+            } catch {}
+        });
 
-    function clean() {
-        children.forEach((process) => process.close());
-        caddy_process.close();
+        try {
+            caddy_process.kill("SIGKILL");
+            caddy_process.close();
+            // deno-lint-ignore no-empty
+        } catch {}
+        // console.trace("clean2");
+        await Promise.allSettled(pendings);
+        await Promise.allSettled(
+            [caddy_process, ...children].map((process) => process.status()),
+        );
+        // console.trace("clean3");
     }
-    return new Promise<void>((s, j) => {
+    try {
+        console.log("child process caddy started");
+        signal?.addEventListener("abort", async () => {
+            await clean();
+        });
         if (signal?.aborted) {
-            clean();
-            return s();
+            await clean();
+            return;
+        }
+
+        const error_controller = new AbortController();
+        pendings.push(
+            caddy_process.status().then((status) => {
+                caddy_process.close();
+                if (signal?.aborted) {
+                    return;
+                }
+                console.error("child process caddy exited", status);
+                children.forEach((process) => process.close());
+                error_controller.abort(
+                    new Error(
+                        "child process caddy exited:" + JSON.stringify(status),
+                    ),
+                );
+            }),
+        );
+        pendings.push(
+            ...children.map(async (process, index) => {
+                const child_port = ports[index];
+                console.log(
+                    ["child process port", child_port, "started"].join(" "),
+                );
+                const status = await process.status();
+                process.close();
+                if (signal?.aborted) {
+                    return;
+                }
+                console.error(
+                    `child process port ${ports[index]} exited`,
+                    status,
+                );
+            }),
+        );
+
+        if (signal?.aborted) {
+            await clean();
+            return;
         }
         if (error_controller.signal.aborted) {
-            return j(error_controller.signal.reason);
+            return Promise.reject(error_controller.signal.reason);
         }
-        error_controller.signal.addEventListener("abort", () => {
-            return j(error_controller.signal.reason);
+
+        return await new Promise<void>((s) => {
+            error_controller.signal.addEventListener("abort", () => {
+                return s(Promise.reject(error_controller.signal.reason));
+            });
+            signal?.addEventListener("abort", async () => {
+                await clean();
+
+                return s();
+            });
         });
-        signal?.addEventListener("abort", () => {
-            clean();
-            return s();
-        });
-    });
+    } catch (e) {
+        throw e;
+    } finally {
+        await clean();
+    }
 }
