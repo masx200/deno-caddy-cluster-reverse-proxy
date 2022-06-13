@@ -23,27 +23,27 @@ export async function serve({
     start_child_process: (options: {
         hostname: string;
         port: number;
-    }) => Deno.Process;
+    }) => Deno.Process | Promise<Deno.Process>;
 }) {
     if (signal?.aborted) {
         return;
     }
     assert(
         ["http:", "https:"].includes(from_protocol),
-        'protocol expected :["http:", "https:"]',
+        'protocol expected :["http:", "https:"]'
     );
     assert(
         ["http:", "https:"].includes(to_protocol),
-        'protocol expected :["http:", "https:"]',
+        'protocol expected :["http:", "https:"]'
     );
     const listener = Deno.listen({ hostname, port });
     listener.close();
     const from = allowed_server_names.length
         ? allowed_server_names.map((hostname) => ({
-            hostname,
-            port,
-            protocol: from_protocol,
-        }))
+              hostname,
+              port,
+              protocol: from_protocol,
+          }))
         : { port };
     const ports = Array(thread_count)
         .fill(0)
@@ -60,8 +60,8 @@ export async function serve({
     if (signal?.aborted) {
         return;
     }
-    const children = ports.map((port) =>
-        start_child_process({ hostname, port })
+    const children = await Promise.all(
+        ports.map((port) => start_child_process({ hostname, port }))
     );
     const error_controller = new AbortController();
     caddy_process.status().then((status) => {
@@ -72,7 +72,7 @@ export async function serve({
         console.error("child process caddy exited", status);
         children.forEach((process) => process.close());
         error_controller.abort(
-            new Error("child process caddy exited:" + JSON.stringify(status)),
+            new Error("child process caddy exited:" + JSON.stringify(status))
         );
     });
     children.forEach(async (process, index) => {
