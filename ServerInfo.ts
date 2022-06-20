@@ -1,4 +1,5 @@
 export type ServerInfo = {
+    address: string;
     hostname: string;
     protocol: string;
     port: number;

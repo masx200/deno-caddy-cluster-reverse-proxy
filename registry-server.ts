@@ -1,28 +1,17 @@
 import { ServerInfo } from "./ServerInfo.ts";
+export async function register(
+    options: ServerInfo & {
+        token: string;
+        registry: string;
+    },
+) {}
 
-export async function register({
-    name,
-    token,
-    registry,
-    service,
-}: {
-    name: string;
-    token: string;
-    registry: string;
-    service: ServerInfo;
-}) {}
-
-export async function unregister({
-    name,
-    token,
-    registry,
-    service,
-}: {
-    name: string;
-    token: string;
-    registry: string;
-    service: ServerInfo;
-}) {}
+export async function unregister(
+    options: Pick<ServerInfo, "id"> & {
+        token: string;
+        registry: string;
+    },
+) {}
 
 export async function getAllServices({
     registry,
