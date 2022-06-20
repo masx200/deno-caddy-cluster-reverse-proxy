@@ -7,10 +7,7 @@ export async function register(
 ) {}
 
 export async function unregister(
-    options: { id: string } & {
-        token: string;
-        registry: string;
-    },
+    options: { id: string } & { token: string; registry: string },
 ) {}
 
 export async function getAllServices({
