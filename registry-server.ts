@@ -4,14 +4,14 @@ export async function decode_request<T>(
         Request,
         "method" | "url" | "headers" | "body"
     >
-): Promise<T | { status: number }> {}
+): Promise<({ target: string } & T) | { status: number; message: string }> {}
 
-export function encode_response(options: string[] | void): Response {}
+export function encode_response<T>(options: T): Response {}
 export async function register(
     options: ServerInfo & {
         token: string;
     }
-): Promise<void | { status: number }> {}
+): Promise<void | { status: number; message: string }> {}
 
 export async function unregister(
     options: { id: string } & { token: string }

@@ -1,16 +1,8 @@
 import { ServerInfo } from "./ServerInfo.ts";
-export function encode_request(
-    options:
-        & {
-            target: string;
-
-            registry_base_url: string;
-        }
-        & Partial<
-            ServerInfo & {
-                token: string;
-            }
-        >,
+export function encode_request<T>(
+    options: T & {
+        target: string;
+    },
 ): Request {}
 export async function decode_response<T>(options: Response): Promise<T> {}
 export async function register(
