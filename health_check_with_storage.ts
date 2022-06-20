@@ -6,4 +6,5 @@ export async function health_check_with_storage({
 }: {
     Registry_Storage: RegistryStorage;
     signal?: AbortSignal;
-}) {}
+}) {
+}

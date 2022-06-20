@@ -5,4 +5,5 @@ export type RegistryStorage = {
     getAllAddress({ name }: { name: string }): Promise<string[]>;
     setServerInfo(options: ServerInfo & { expires: number }): Promise<void>;
     deleteServerInfo(options: { id: string }): Promise<void>;
+    getAllServerInfo(): Promise<Array<ServerInfo & { expires: number }>>;
 };

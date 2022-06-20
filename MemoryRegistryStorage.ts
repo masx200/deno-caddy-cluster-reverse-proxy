@@ -19,6 +19,9 @@ export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
         name_to_ids.forEach((set) => set.delete(id));
     };
     return {
+        async getAllServerInfo() {
+            return Array.from(id_to_server_info.values());
+        },
         async getAllServices(): Promise<string[]> {
             return Array.from(name_to_ids.keys());
         },
