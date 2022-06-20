@@ -13,7 +13,7 @@ export async function decode_request<T>(
 export function encode_response<T>(options: T): Response {}
 
 export async function create_handler(options: {
-    Registry_Storage: RegistryStorage;
+    create_Registry_Storage: () => Promise<RegistryStorage>;
     registry_pathname_prefix: string;
     token: string;
 }) {}
