@@ -5,18 +5,25 @@ import { RegistryStorage } from "./RegistryStorage.ts";
 import { ServerInfo } from "./ServerInfo.ts";
 
 import { encode_json_response } from "./encode_json_response.ts";
+export async function health_check(options: {
+    promise_Registry_Storage: Promise<RegistryStorage>;
+    signal: AbortSignal;
+}) {
 
+    
+}
 export function create_middleware(options: {
-    create_Registry_Storage: () => Promise<RegistryStorage>;
+    promise_Registry_Storage: Promise<RegistryStorage>;
     pathname_prefix: string;
     auth_token: string;
 }): Middleware {
-    const { pathname_prefix, create_Registry_Storage, auth_token } = options;
-    const cp = create_Registry_Storage();
+    const { pathname_prefix, promise_Registry_Storage, auth_token } = options;
+    const cp = promise_Registry_Storage;
 
     return async (ctx, next) => {
         const Registry_Storage = await cp;
-        if (ctx.request.url.startsWith(pathname_prefix)) {
+        const pathname = new URL(ctx.request.url).pathname;
+        if (pathname.startsWith(pathname_prefix)) {
             if (["HEAD", "GET"].includes(ctx.request.method)) {
                 let data: Record<string, unknown>;
 
@@ -25,7 +32,7 @@ export function create_middleware(options: {
                         ctx.request,
                     );
                 } catch (e) {
-                    return new Response(String(e), { status: 400 });
+                    return BadRequestError(e);
                 }
                 if ("target" in data) {
                     const { target } = data;
@@ -57,7 +64,7 @@ export function create_middleware(options: {
                         Record<string, unknown>
                     >(ctx.request);
                 } catch (e) {
-                    return new Response(String(e), { status: 400 });
+                    return BadRequestError(e);
                 }
                 const Authorization =
                     ctx.request.headers.get("Authorization") ?? "";
@@ -119,6 +126,11 @@ export function create_middleware(options: {
         return;
     };
 }
+// deno-lint-ignore no-explicit-any
+function BadRequestError(e: any) {
+    return new Response(String(e), { status: 400 });
+}
+
 function BadRequestTypeError() {
     return new Response("TypeError", { status: 400 });
 }
