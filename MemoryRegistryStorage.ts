@@ -10,14 +10,14 @@ export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
             expires: number;
         }
     >();
-    const deleteServerInfo = async function deleteServerInfo(options: {
+    async function deleteServerInfo(options: {
         id: string;
     }): Promise<void> {
         const { id } = options;
 
         id_to_server_info.delete(id);
         name_to_ids.forEach((set) => set.delete(id));
-    };
+    }
     return {
         async getAllServerInfo() {
             const now = Number(new Date());

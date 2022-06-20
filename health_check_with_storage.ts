@@ -19,6 +19,10 @@ export async function health_check_with_storage({
 
             try {
                 const response = await fetch(health_uri, { signal });
+                await Promise.race([
+                    AbortSignalPromisify(signal),
+                    response.text(),
+                ]);
                 const status = response.status;
                 assertEquals(status, health_status);
             } catch (error) {

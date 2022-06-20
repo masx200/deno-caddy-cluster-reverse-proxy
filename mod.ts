@@ -9,4 +9,4 @@ export { create_middleware } from "./create_middleware.ts";
 export { start_health_check } from "./start_health_check.ts";
 export { MemoryRegistryStorage };
 export { AbortSignalPromisify };
-export type { RegistryStorage ,ServerInfo};
+export type { RegistryStorage, ServerInfo };

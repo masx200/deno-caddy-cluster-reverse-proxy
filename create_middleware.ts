@@ -16,14 +16,13 @@ export function isPlainObject(value: any) {
     return typeof value === "object" && !Array.isArray(value) && value !== null;
 }
 export function create_middleware(options: {
-    promise_Registry_Storage: Promise<RegistryStorage>;
+    Registry_Storage: RegistryStorage;
     pathname_prefix: string;
     auth_token: string;
 }): Middleware {
-    const { pathname_prefix, promise_Registry_Storage, auth_token } = options;
+    const { pathname_prefix, Registry_Storage, auth_token } = options;
 
     return async (ctx, next) => {
-        const Registry_Storage = await promise_Registry_Storage;
         const pathname = new URL(ctx.request.url).pathname;
         if (pathname.startsWith(pathname_prefix)) {
             if (["HEAD", "GET"].includes(ctx.request.method)) {
