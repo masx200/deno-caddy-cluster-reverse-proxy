@@ -15,7 +15,7 @@ export async function health_check_with_storage({
     ]);
     await Promise.all(
         AllServerInfo.map(async (info) => {
-            const { id, health_status, health_uri } = info;
+            const { address, health_status, health_uri } = info;
 
             try {
                 const response = await fetch(health_uri, { signal });
@@ -31,7 +31,7 @@ export async function health_check_with_storage({
                 }
                 await Promise.race([
                     AbortSignalPromisify(signal),
-                    Registry_Storage.deleteServerInfo({ id }),
+                    Registry_Storage.deleteServerInfo({ address }),
                 ]);
             }
         }),

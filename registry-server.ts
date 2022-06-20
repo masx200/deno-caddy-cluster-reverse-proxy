@@ -12,10 +12,10 @@ export async function register_with_storage(
     await Registry_Storage.setServerInfo({ ...rest, expires });
 }
 export async function unregister_with_storage(
-    options: { id: string } & {
+    options: { address: string } & {
         Registry_Storage: RegistryStorage;
     },
 ): Promise<void> {
-    const { id, Registry_Storage } = options;
-    await Registry_Storage.deleteServerInfo({ id });
+    const { address, Registry_Storage } = options;
+    await Registry_Storage.deleteServerInfo({ address });
 }

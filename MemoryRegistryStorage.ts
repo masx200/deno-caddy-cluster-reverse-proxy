@@ -3,41 +3,41 @@ import { RegistryStorage } from "./RegistryStorage.ts";
 import { ServerInfo } from "./ServerInfo.ts";
 
 export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
-    const name_to_ids = new Map<string, Set<string>>();
-    const id_to_server_info = new Map<
+    const name_to_address = new Map<string, Set<string>>();
+    const address_to_server_info = new Map<
         string,
         ServerInfo & {
             expires: number;
         }
     >();
     async function deleteServerInfo(options: {
-        id: string;
+        address: string;
     }): Promise<void> {
-        const { id } = options;
+        const { address } = options;
 
-        id_to_server_info.delete(id);
-        name_to_ids.forEach((set) => set.delete(id));
+        address_to_server_info.delete(address);
+        name_to_address.forEach((set) => set.delete(address));
     }
     return {
         async getAllServerInfo() {
             const now = Number(new Date());
-            const infos = Array.from(id_to_server_info.values());
+            const infos = Array.from(address_to_server_info.values());
             await Promise.all(
                 infos.map(async (info) => {
                     if (info.expires < now) {
-                        await deleteServerInfo({ id: info.id });
+                        await deleteServerInfo({ address: info.address });
                     }
                 }),
             );
             return infos;
         },
         async getAllServices(): Promise<string[]> {
-            return Array.from(name_to_ids.keys());
+            return Array.from(name_to_address.keys());
         },
         async getAllAddress({ name }: { name: string }): Promise<string[]> {
             const now = Number(new Date());
-            const infos = Array.from(name_to_ids.get(name) ?? [])
-                .map((id) => id_to_server_info.get(id))
+            const infos = Array.from(name_to_address.get(name) ?? [])
+                .map((address) => address_to_server_info.get(address))
                 .filter((info) => info && info.expires > now) as Array<
                     ServerInfo & {
                         expires: number;
@@ -46,7 +46,7 @@ export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
             await Promise.all(
                 infos.map(async (info) => {
                     if (info.expires < now) {
-                        await deleteServerInfo({ id: info.id });
+                        await deleteServerInfo({ address: info.address });
                     }
                 }),
             );
@@ -57,11 +57,11 @@ export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
                 expires: number;
             },
         ): Promise<void> {
-            const { id, name } = options;
-            const set = name_to_ids.get(name) ?? new Set();
-            set.add(id);
-            name_to_ids.set(name, set);
-            id_to_server_info.set(id, options);
+            const { address, name } = options;
+            const set = name_to_address.get(name) ?? new Set();
+            set.add(address);
+            name_to_address.set(name, set);
+            address_to_server_info.set(address, options);
         },
         deleteServerInfo,
     };

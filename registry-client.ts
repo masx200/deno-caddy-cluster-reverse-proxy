@@ -45,7 +45,7 @@ export async function client_start_heart_beat(
     }
 }
 export async function client_unregister(
-    options: { id: string } & {
+    options: { address: string } & {
         token: string;
         base_url: string;
     },

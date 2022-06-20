@@ -80,9 +80,9 @@ export function create_middleware(options: {
                 if ("target" in data) {
                     const { target } = data;
                     if (target === "unregister") {
-                        if (typeof data.id === "string") {
+                        if (typeof data.address === "string") {
                             await unregister_with_storage({
-                                id: data.id,
+                                address: data.address,
                                 Registry_Storage,
                             });
                             return new Response();
@@ -92,11 +92,10 @@ export function create_middleware(options: {
                     }
                     if (target === "register") {
                         const {
-                            address,
                             hostname,
                             protocol,
                             port,
-                            id,
+                            address,
                             name,
                             health_uri,
                             health_status,
@@ -106,7 +105,6 @@ export function create_middleware(options: {
                             "string" === typeof hostname &&
                             "string" === typeof protocol &&
                             "string" === typeof name &&
-                            "string" === typeof id &&
                             "string" === typeof health_uri &&
                             "number" === typeof health_status &&
                             "number" === typeof port
@@ -116,7 +114,7 @@ export function create_middleware(options: {
                                 hostname,
                                 protocol,
                                 port,
-                                id,
+
                                 name,
                                 health_uri,
                                 health_status,
