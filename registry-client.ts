@@ -11,21 +11,6 @@ export async function register({
     registry: string;
     service: ServerInfo;
 }) {}
-export async function heartbeat({
-    name,
-    token,
-    registry,
-    signal,
-    service,
-    interval = 15 * 1000,
-}: {
-    signal?: AbortSignal;
-    name: string;
-    interval?: number;
-    token: string;
-    registry: string;
-    service: ServerInfo;
-}) {}
 
 export async function unregister({
     name,
