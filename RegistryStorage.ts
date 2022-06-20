@@ -1,9 +1,13 @@
-import { ServerInfo } from "./ServerInfo.ts";
+import { ServerInformation } from "./ServerInformation.ts";
 
 export type RegistryStorage = {
-    getAllServices(): Promise<string[]>;
+    getAllServiceNames(): Promise<string[]>;
     getAllAddress({ name }: { name: string }): Promise<string[]>;
-    setServerInfo(options: ServerInfo & { expires: number }): Promise<void>;
-    deleteServerInfo(options: { address: string }): Promise<void>;
-    getAllServerInfo(): Promise<Array<ServerInfo & { expires: number }>>;
+    upsertServerInformation(
+        options: ServerInformation & { expires: number },
+    ): Promise<void>;
+    deleteServerInformation(options: { address: string }): Promise<void>;
+    getAllServerInformation(): Promise<
+        Array<ServerInformation & { expires: number }>
+    >;
 };

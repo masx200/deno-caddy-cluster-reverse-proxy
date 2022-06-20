@@ -44,14 +44,14 @@ export function create_middleware(options: {
                 }
                 if ("target" in data) {
                     const { target } = data;
-                    if (target === "getAllServerInfo") {
+                    if (target === "getAllServerInformation") {
                         return encode_json_response(
-                            await Registry_Storage.getAllServerInfo(),
+                            await Registry_Storage.getAllServerInformation(),
                         );
                     }
-                    if (target === "getAllServices") {
+                    if (target === "getAllServiceNames") {
                         return encode_json_response(
-                            await Registry_Storage.getAllServices(),
+                            await Registry_Storage.getAllServiceNames(),
                         );
                     }
 

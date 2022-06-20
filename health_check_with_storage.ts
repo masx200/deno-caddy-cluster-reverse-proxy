@@ -9,12 +9,12 @@ export async function health_check_with_storage({
     Registry_Storage: RegistryStorage;
     signal?: AbortSignal;
 }) {
-    const AllServerInfo = await Promise.race([
-        Registry_Storage.getAllServerInfo(),
+    const AllServerInformation = await Promise.race([
+        Registry_Storage.getAllServerInformation(),
         AbortSignalPromisify(signal),
     ]);
     await Promise.all(
-        AllServerInfo.map(async (info) => {
+        AllServerInformation.map(async (info) => {
             const { address, health_status, health_uri } = info;
 
             try {
@@ -31,7 +31,7 @@ export async function health_check_with_storage({
                 }
                 await Promise.race([
                     AbortSignalPromisify(signal),
-                    Registry_Storage.deleteServerInfo({ address }),
+                    Registry_Storage.deleteServerInformation({ address }),
                 ]);
             }
         }),

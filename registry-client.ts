@@ -1,5 +1,5 @@
 import { check_response_ok } from "./deps.ts";
-import { ServerInfo } from "./ServerInfo.ts";
+import { ServerInformation } from "./ServerInformation.ts";
 import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 import { encode_get_search_request } from "./encode_get_search_request.ts";
 import { encode_post_body_request } from "./encode_post_body_request.ts";
@@ -8,7 +8,7 @@ import { delay } from "https://deno.land/std@0.144.0/async/delay.ts";
 import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 
 export async function client_register(
-    options: ServerInfo & {
+    options: ServerInformation & {
         token: string;
         base_url: string;
         signal?: AbortSignal;
@@ -30,7 +30,7 @@ export async function client_register(
     ]);
 }
 export async function client_start_heart_beat(
-    options: ServerInfo & {
+    options: ServerInformation & {
         token: string;
         base_url: string;
         signal?: AbortSignal;
@@ -62,10 +62,10 @@ export async function client_unregister(
     const response = await fetch(request);
     await check_response_ok(response);
 }
-export async function client_getAllServerInfo(options: {
+export async function client_getAllServerInformation(options: {
     base_url: string;
 }): Promise<
-    (ServerInfo & {
+    (ServerInformation & {
         expires: number;
     })[]
 > {
@@ -73,30 +73,30 @@ export async function client_getAllServerInfo(options: {
     const request = encode_get_search_request(
         {
             ...rest,
-            target: "getAllServerInfo",
+            target: "getAllServerInformation",
         },
         base_url,
     );
     const response = await fetch(request);
     await check_response_ok(response);
     const result = await decode_json_response<
-        (ServerInfo & {
+        (ServerInformation & {
             expires: number;
         })[]
     >(response);
     assert(Array.isArray(result));
-    return result as (ServerInfo & {
+    return result as (ServerInformation & {
         expires: number;
     })[];
 }
-export async function client_getAllServices(options: {
+export async function client_getAllServiceNames(options: {
     base_url: string;
 }): Promise<string[]> {
     const { base_url, ...rest } = options;
     const request = encode_get_search_request(
         {
             ...rest,
-            target: "getAllServices",
+            target: "getAllServiceNames",
         },
         base_url,
     );

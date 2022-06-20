@@ -1,16 +1,16 @@
 // deno-lint-ignore-file require-await
 import { RegistryStorage } from "./RegistryStorage.ts";
-import { ServerInfo } from "./ServerInfo.ts";
+import { ServerInformation } from "./ServerInformation.ts";
 
 export function MemoryRegistryStorage(): RegistryStorage {
     const name_to_address = new Map<string, Set<string>>();
     const address_to_server_info = new Map<
         string,
-        ServerInfo & {
+        ServerInformation & {
             expires: number;
         }
     >();
-    async function deleteServerInfo(options: {
+    async function deleteServerInformation(options: {
         address: string;
     }): Promise<void> {
         const { address } = options;
@@ -19,19 +19,21 @@ export function MemoryRegistryStorage(): RegistryStorage {
         name_to_address.forEach((set) => set.delete(address));
     }
     return {
-        async getAllServerInfo() {
+        async getAllServerInformation() {
             const now = Number(new Date());
             const infos = Array.from(address_to_server_info.values());
             await Promise.all(
                 infos.map(async (info) => {
                     if (info.expires < now) {
-                        await deleteServerInfo({ address: info.address });
+                        await deleteServerInformation({
+                            address: info.address,
+                        });
                     }
                 }),
             );
             return infos;
         },
-        async getAllServices(): Promise<string[]> {
+        async getAllServiceNames(): Promise<string[]> {
             return Array.from(name_to_address.keys());
         },
         async getAllAddress({ name }: { name: string }): Promise<string[]> {
@@ -39,21 +41,23 @@ export function MemoryRegistryStorage(): RegistryStorage {
             const infos = Array.from(name_to_address.get(name) ?? [])
                 .map((address) => address_to_server_info.get(address))
                 .filter((info) => info && info.expires > now) as Array<
-                    ServerInfo & {
+                    ServerInformation & {
                         expires: number;
                     }
                 >;
             await Promise.all(
                 infos.map(async (info) => {
                     if (info.expires < now) {
-                        await deleteServerInfo({ address: info.address });
+                        await deleteServerInformation({
+                            address: info.address,
+                        });
                     }
                 }),
             );
             return infos.map((info) => info.address);
         },
-        async setServerInfo(
-            options: ServerInfo & {
+        async upsertServerInformation(
+            options: ServerInformation & {
                 expires: number;
             },
         ): Promise<void> {
@@ -63,6 +67,6 @@ export function MemoryRegistryStorage(): RegistryStorage {
             name_to_address.set(name, set);
             address_to_server_info.set(address, options);
         },
-        deleteServerInfo,
+        deleteServerInformation,
     };
 }

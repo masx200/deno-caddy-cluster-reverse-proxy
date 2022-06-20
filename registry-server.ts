@@ -1,15 +1,15 @@
 import { RegistryStorage } from "./RegistryStorage.ts";
-import { ServerInfo } from "./ServerInfo.ts";
+import { ServerInformation } from "./ServerInformation.ts";
 
 export async function register_with_storage(
-    options: ServerInfo & {
+    options: ServerInformation & {
         Registry_Storage: RegistryStorage;
         maxAge?: number;
     },
 ): Promise<void> {
     const { Registry_Storage, maxAge = 30 * 1000, ...rest } = options;
     const expires = Number(new Date()) + maxAge;
-    await Registry_Storage.setServerInfo({ ...rest, expires });
+    await Registry_Storage.upsertServerInformation({ ...rest, expires });
 }
 export async function unregister_with_storage(
     options: { address: string } & {
@@ -17,5 +17,5 @@ export async function unregister_with_storage(
     },
 ): Promise<void> {
     const { address, Registry_Storage } = options;
-    await Registry_Storage.deleteServerInfo({ address });
+    await Registry_Storage.deleteServerInformation({ address });
 }
