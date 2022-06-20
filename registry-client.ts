@@ -1,30 +1,25 @@
 import { check_response_ok } from "./deps.ts";
 import { ServerInfo } from "./ServerInfo.ts";
 import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
+import { encode_get_search_request } from "./encode_get_search_request.ts";
+import { encode_post_body_request } from "./encode_post_body_request.ts";
+import { decode_json_response } from "./decode_json_response.ts";
 
-export function encode_get_request<T>(
-    options: T & {
-        target: string;
-    },
-): Request {}
-export function encode_post_request<T>(
-    options: T & {
-        target: string;
-    },
-): Request {}
-
-export async function decode_response<T>(response: Response): Promise<T> {
-    const result = await response.json();
-
-    return result as T;
-}
 export async function register(
     options: ServerInfo & {
         token: string;
-        registry_base_url: string;
+        base_url: string;
     },
 ) {
-    const request = encode_post_request({ ...options, target: "register" });
+    const { token, base_url, ...rest } = options;
+    const request = encode_post_body_request(
+        {
+            ...rest,
+            target: "register",
+        },
+        base_url,
+    );
+    request.headers.set("Authorization", "Bearer " + token);
     const response = await fetch(request);
     await check_response_ok(response);
 }
@@ -32,38 +27,54 @@ export async function register(
 export async function unregister(
     options: { id: string } & {
         token: string;
-        registry_base_url: string;
+        base_url: string;
     },
 ) {
-    const request = encode_post_request({ ...options, target: "unregister" });
+    const { token, base_url, ...rest } = options;
+    const request = encode_post_body_request(
+        {
+            ...rest,
+            target: "unregister",
+        },
+        base_url,
+    );
+    request.headers.set("Authorization", "Bearer " + token);
     const response = await fetch(request);
     await check_response_ok(response);
 }
 
 export async function getAllServices(options: {
-    registry_base_url: string;
+    base_url: string;
 }): Promise<string[]> {
-    const request = encode_get_request({
-        ...options,
-        target: "getAllServices",
-    });
+    const { base_url, ...rest } = options;
+    const request = encode_get_search_request(
+        {
+            ...rest,
+            target: "getAllServices",
+        },
+        base_url,
+    );
     const response = await fetch(request);
     await check_response_ok(response);
-    const result = await decode_response(response);
+    const result = await decode_json_response(response);
     assert(Array.isArray(result));
     return result as string[];
 }
 export async function getAllAddress(options: {
     name: string;
-    registry_base_url: string;
+    base_url: string;
 }): Promise<string[]> {
-    const request = encode_get_request({
-        ...options,
-        target: "getAllAddress",
-    });
+    const { base_url, ...rest } = options;
+    const request = encode_get_search_request(
+        {
+            ...rest,
+            target: "getAllAddress",
+        },
+        base_url,
+    );
     const response = await fetch(request);
     await check_response_ok(response);
-    const result = await decode_response(response);
+    const result = await decode_json_response(response);
     assert(Array.isArray(result));
     return result as string[];
 }

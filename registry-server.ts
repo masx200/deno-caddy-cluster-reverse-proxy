@@ -1,4 +1,3 @@
-// deno-lint-ignore-file require-await
 import { Middleware } from "https://deno.land/x/masx200_deno_http_middleware@1.2.3/mod.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
 import { ServerInfo } from "./ServerInfo.ts";
@@ -11,31 +10,20 @@ export type HttpError = Error & {
     headers?: Headers;
 };
 
-export async function decode_get_request<T>(
-    options:
-        & { registry_pathname_prefix: string }
-        & Pick<
-            Request,
-            "method" | "url" | "headers" | "body"
-        >,
-): Promise<{ target: string } & T> {}
-export async function decode_post_request<T>(
-    options:
-        & { registry_pathname_prefix: string }
-        & Pick<
-            Request,
-            "method" | "url" | "headers" | "body"
-        >,
-): Promise<{ target: string } & T> {}
-
-export function encode_response<T>(options: T): Response {}
-
 export async function create_middleware(options: {
     create_Registry_Storage: () => Promise<RegistryStorage>;
-    registry_pathname_prefix: string;
+    pathname_prefix: string;
     token: string;
-}): Middleware {
-    return async (ctx, next) => {};
+}): Promise<Middleware> {
+    const { pathname_prefix, create_Registry_Storage } = options;
+    const Registry_Storage = await create_Registry_Storage();
+
+    return async (ctx, next) => {
+        if (ctx.request.url.startsWith(pathname_prefix)) {
+        } else {
+            await next();
+        }
+    };
 }
 export async function register(
     options: ServerInfo & {
