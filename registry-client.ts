@@ -9,7 +9,7 @@ export async function register(
 ) {}
 
 export async function unregister(
-    options: ServerInfo & {
+    options: { id: string } & {
         name: string;
         token: string;
         registry: string;

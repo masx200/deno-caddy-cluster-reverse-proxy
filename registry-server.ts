@@ -7,7 +7,7 @@ export async function register(
 ) {}
 
 export async function unregister(
-    options: Pick<ServerInfo, "id"> & {
+    options: { id: string } & {
         token: string;
         registry: string;
     },
