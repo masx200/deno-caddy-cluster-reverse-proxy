@@ -1,4 +1,4 @@
-export type Server = {
+export type ServerInfo = {
     hostname: string;
     protocol: string;
     port: number;

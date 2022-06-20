@@ -1,4 +1,4 @@
-import { Server } from "./Server.ts";
+import { ServerInfo } from "./ServerInfo.ts";
 
 export async function register({
     name,
@@ -9,7 +9,7 @@ export async function register({
     name: string;
     token: string;
     registry: string;
-    service: Server;
+    service: ServerInfo;
 }) {}
 export async function heartbeat({
     name,
@@ -24,7 +24,7 @@ export async function heartbeat({
     interval?: number;
     token: string;
     registry: string;
-    service: Server;
+    service: ServerInfo;
 }) {}
 
 export async function unregister({
@@ -36,7 +36,7 @@ export async function unregister({
     name: string;
     token: string;
     registry: string;
-    service: Server;
+    service: ServerInfo;
 }) {}
 
 export async function getAllServices({
