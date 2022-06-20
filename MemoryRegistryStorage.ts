@@ -20,7 +20,16 @@ export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
     };
     return {
         async getAllServerInfo() {
-            return Array.from(id_to_server_info.values());
+            const now = Number(new Date());
+            const infos = Array.from(id_to_server_info.values());
+            await Promise.all(
+                infos.map(async (info) => {
+                    if (info.expires < now) {
+                        await deleteServerInfo({ id: info.id });
+                    }
+                }),
+            );
+            return infos;
         },
         async getAllServices(): Promise<string[]> {
             return Array.from(name_to_ids.keys());

@@ -1,6 +1,6 @@
 import { RegistryStorage } from "./RegistryStorage.ts";
 import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
-import { delay } from "https://deno.land/std@0.143.0/async/delay.ts";
+import { delay } from "https://deno.land/std@0.144.0/async/delay.ts";
 import { health_check_with_storage } from "./health_check_with_storage.ts";
 
 export async function start_health_check(options: {

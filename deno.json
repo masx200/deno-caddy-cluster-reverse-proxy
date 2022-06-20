@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "udd": "udd '*.ts'",
         "check": " deno check --remote --unstable ./mod.ts",
         "test": "deno test -A  --unstable"
     },
