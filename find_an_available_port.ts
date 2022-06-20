@@ -1,4 +1,4 @@
-import { assert } from "https://deno.land/std@0.143.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
 export function find_an_available_port(hostname = "0.0.0.0") {
     const listener = Deno.listen({ hostname, port: 0 });
