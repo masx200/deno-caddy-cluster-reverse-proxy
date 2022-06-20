@@ -17,10 +17,16 @@ export function isPlainObject(value: any) {
 }
 export function create_middleware(options: {
     Registry_Storage: RegistryStorage;
+    maxAge?: number;
     pathname_prefix: string;
-    auth_token: string;
+    check_auth_token: (token: string) => Promise<boolean>;
 }): Middleware {
-    const { pathname_prefix, Registry_Storage, auth_token } = options;
+    const {
+        pathname_prefix,
+        Registry_Storage,
+        check_auth_token,
+        maxAge = 30 * 1000,
+    } = options;
 
     return async (ctx, next) => {
         const pathname = new URL(ctx.request.url).pathname;
@@ -74,7 +80,10 @@ export function create_middleware(options: {
                 const Authorization =
                     ctx.request.headers.get("Authorization") ?? "";
                 const [bearer, api_token] = Authorization.split(" ");
-                if (bearer !== "Bearer" || api_token !== auth_token) {
+                if (
+                    bearer !== "Bearer" ||
+                    !(await check_auth_token(api_token))
+                ) {
                     return Unauthorized_Bearer_Authenticate();
                 }
                 if ("target" in data) {
@@ -114,7 +123,7 @@ export function create_middleware(options: {
                                 hostname,
                                 protocol,
                                 port,
-
+                                maxAge,
                                 name,
                                 health_uri,
                                 health_status,

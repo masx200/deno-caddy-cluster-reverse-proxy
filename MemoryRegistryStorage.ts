@@ -2,7 +2,7 @@
 import { RegistryStorage } from "./RegistryStorage.ts";
 import { ServerInfo } from "./ServerInfo.ts";
 
-export async function MemoryRegistryStorage(): Promise<RegistryStorage> {
+export function MemoryRegistryStorage(): RegistryStorage {
     const name_to_address = new Map<string, Set<string>>();
     const address_to_server_info = new Map<
         string,
