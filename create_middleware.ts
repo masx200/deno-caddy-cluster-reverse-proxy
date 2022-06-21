@@ -30,7 +30,7 @@ export function create_middleware(options: {
 
     return async (ctx, next) => {
         const pathname = new URL(ctx.request.url).pathname;
-        if (pathname.startsWith(pathname_prefix)) {
+        if (pathname===(pathname_prefix)) {
             if (["HEAD", "GET"].includes(ctx.request.method)) {
                 let data: Record<string, unknown> | undefined;
 
