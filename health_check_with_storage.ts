@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.144.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
 
@@ -18,18 +18,23 @@ export async function health_check_with_storage({
     const now = Number(new Date());
     await Promise.all(
         AllServerInformation.map(async (info) => {
-            const { address, health_status, health_uri, last_check } = info;
+            const { address, /* health_status,  */ health_url, last_check } =
+                info;
             if (now - last_check < interval) {
                 return;
             }
             try {
-                const response = await fetch(health_uri, { signal });
-                await Promise.race([
-                    AbortSignalPromisify(signal),
-                    response.text(),
-                ]);
-                const status = response.status;
-                assertEquals(status, health_status);
+                const response = await fetch(health_url, {
+                    signal,
+                    method: "HEAD",
+                });
+                assert(response.ok);
+                // await Promise.race([
+                //     AbortSignalPromisify(signal),
+                //     response.text(),
+                // ]);
+                // const status = response.status;
+                // assertEquals(status, health_status);
             } catch (error) {
                 if (error instanceof DOMException) {
                     return;

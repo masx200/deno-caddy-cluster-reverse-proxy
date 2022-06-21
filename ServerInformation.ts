@@ -4,7 +4,7 @@ export type ServerInformation = {
     protocol: string;
     port: number;
 
-    health_uri: string;
-    health_status: number;
+    health_url: string;
+    // health_status: number;
     name: string;
 };

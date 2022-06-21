@@ -53,9 +53,9 @@ export function create_middleware(options: {
                         const { address } = data;
                         if ("string" === typeof address) {
                             return encode_json_response(
-                                await Registry_Storage.getServerInformation(
+                                (await Registry_Storage.getServerInformation(
                                     address,
-                                ) ?? null,
+                                )) ?? null,
                             );
                         } else {
                             return BadRequestTypeError();
@@ -118,16 +118,16 @@ export function create_middleware(options: {
                             port,
                             address,
                             name,
-                            health_uri,
-                            health_status,
+                            health_url,
+                            // health_status,
                         } = data;
                         if (
                             "string" === typeof address &&
                             "string" === typeof hostname &&
                             "string" === typeof protocol &&
                             "string" === typeof name &&
-                            "string" === typeof health_uri &&
-                            "number" === typeof health_status &&
+                            "string" === typeof health_url &&
+                            // "number" === typeof health_status &&
                             "number" === typeof port
                         ) {
                             await register_with_storage({
@@ -137,8 +137,8 @@ export function create_middleware(options: {
                                 port,
                                 maxAge,
                                 name,
-                                health_uri,
-                                health_status,
+                                health_url,
+                                // health_status,
                                 Registry_Storage,
                             });
                             return new Response();
