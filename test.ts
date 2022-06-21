@@ -40,8 +40,9 @@ console.log(
                         await assertRejects(async () => {
 const response_404=await fetch("http://127.0.0.1:20500/404")
 
-check_response_ok(response_404)
+await check_response_ok(response_404)
 }, "Not Found"));
+
                     console.log(
                         await assertRejects(async () => {
                             await client_register({
