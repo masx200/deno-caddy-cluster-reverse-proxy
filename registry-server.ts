@@ -17,5 +17,5 @@ export async function unregister_with_storage(
     },
 ): Promise<void> {
     const { address, Registry_Storage } = options;
-    await Registry_Storage.deleteServerInformation({ address });
+    await Registry_Storage.deleteServerInformation(address);
 }

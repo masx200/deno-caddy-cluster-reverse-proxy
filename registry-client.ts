@@ -67,6 +67,7 @@ export async function client_getAllServerInformation(options: {
 }): Promise<
     (ServerInformation & {
         expires: number;
+        last_check: number;
     })[]
 > {
     const { base_url, ...rest } = options;
@@ -82,12 +83,52 @@ export async function client_getAllServerInformation(options: {
     const result = await decode_json_response<
         (ServerInformation & {
             expires: number;
+            last_check: number;
         })[]
     >(response);
     assert(Array.isArray(result));
     return result as (ServerInformation & {
         expires: number;
+        last_check: number;
     })[];
+}
+export async function client_getServerInformation(options: {
+    base_url: string;
+    address: string;
+}): Promise<
+    | (ServerInformation & {
+        expires: number;
+        last_check: number;
+    })
+    | undefined
+    | null
+> {
+    const { base_url, ...rest } = options;
+    const request = encode_get_search_request(
+        {
+            ...rest,
+            target: "getServerInformation",
+        },
+        base_url,
+    );
+    const response = await fetch(request);
+    await check_response_ok(response);
+    const result = await decode_json_response<
+        | undefined
+        | null
+        | (ServerInformation & {
+            expires: number;
+            last_check: number;
+        })[]
+    >(response);
+
+    return result as
+        | undefined
+        | null
+        | (ServerInformation & {
+            expires: number;
+            last_check: number;
+        });
 }
 export async function client_getAllServiceNames(options: {
     base_url: string;

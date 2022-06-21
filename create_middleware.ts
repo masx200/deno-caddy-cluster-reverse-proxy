@@ -49,6 +49,18 @@ export function create_middleware(options: {
                             await Registry_Storage.getAllServerInformation(),
                         );
                     }
+                    if (target === "getServerInformation") {
+                        const { address } = data;
+                        if ("string" === typeof address) {
+                            return encode_json_response(
+                                await Registry_Storage.getServerInformation(
+                                    address,
+                                ) ?? null,
+                            );
+                        } else {
+                            return BadRequestTypeError();
+                        }
+                    }
                     if (target === "getAllServiceNames") {
                         return encode_json_response(
                             await Registry_Storage.getAllServiceNames(),

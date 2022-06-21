@@ -5,18 +5,23 @@ import { RegistryStorage } from "./RegistryStorage.ts";
 export async function health_check_with_storage({
     Registry_Storage,
     signal,
+    interval = 20 * 1000,
 }: {
     Registry_Storage: RegistryStorage;
     signal?: AbortSignal;
+    interval?: number;
 }) {
     const AllServerInformation = await Promise.race([
         Registry_Storage.getAllServerInformation(),
         AbortSignalPromisify(signal),
     ]);
+    const now = Number(new Date());
     await Promise.all(
         AllServerInformation.map(async (info) => {
-            const { address, health_status, health_uri } = info;
-
+            const { address, health_status, health_uri, last_check } = info;
+            if (now - last_check < interval) {
+                return;
+            }
             try {
                 const response = await fetch(health_uri, { signal });
                 await Promise.race([
@@ -31,7 +36,7 @@ export async function health_check_with_storage({
                 }
                 await Promise.race([
                     AbortSignalPromisify(signal),
-                    Registry_Storage.deleteServerInformation({ address }),
+                    Registry_Storage.deleteServerInformation(address),
                 ]);
             }
         }),
