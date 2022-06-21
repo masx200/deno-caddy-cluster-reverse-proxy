@@ -1,4 +1,9 @@
-import { serve, ServeInit } from "https://deno.land/std@0.144.0/http/server.ts";
+import {
+    serve,
+    serveTls,
+    ServeInit,
+    ServeTlsInit,
+} from "https://deno.land/std@0.144.0/http/server.ts";
 import {
     conditional_get,
     createHandler,
@@ -14,8 +19,9 @@ export async function RegistryServer({
     Registry_Storage,
     pathname_prefix,
     maxAge,
+    interval,
     ...rest
-}: Partial<ServeInit> & {
+}: (ServeTlsInit | ServeInit) & {
     check_auth_token: (token: string) => Promise<boolean>;
     Registry_Storage: RegistryStorage;
     pathname_prefix?: string;
@@ -35,7 +41,9 @@ export async function RegistryServer({
     ]);
 
     await Promise.all([
-        serve(handler, { ...rest }),
-        start_health_check({ Registry_Storage, ...rest }),
+        "keyFile" in rest
+            ? serveTls(handler, rest)
+            : serve(handler, { ...rest }),
+        start_health_check({ Registry_Storage, interval, ...rest }),
     ]);
 }
