@@ -1,7 +1,7 @@
 import {
     serve,
-    serveTls,
     ServeInit,
+    serveTls,
     ServeTlsInit,
 } from "https://deno.land/std@0.144.0/http/server.ts";
 import {
@@ -23,7 +23,7 @@ export async function RegistryServer({
     interval,
     ...rest
 }: (ServeTlsInit | ServeInit) & {
-    check_auth_token: (token: string) => Promise<boolean>;
+    check_auth_token: (token: string) => boolean | Promise<boolean>;
     Registry_Storage: RegistryStorage;
     pathname_prefix?: string;
     interval?: number;

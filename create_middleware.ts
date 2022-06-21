@@ -19,7 +19,7 @@ export function create_middleware(options: {
     Registry_Storage: RegistryStorage;
     maxAge?: number;
     pathname_prefix?: string;
-    check_auth_token: (token: string) => Promise<boolean>;
+    check_auth_token: (token: string) => boolean | Promise<boolean>;
 }): Middleware {
     const {
         pathname_prefix = "/",
