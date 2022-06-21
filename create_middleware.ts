@@ -18,11 +18,11 @@ export function isPlainObject(value: any) {
 export function create_middleware(options: {
     Registry_Storage: RegistryStorage;
     maxAge?: number;
-    pathname_prefix: string;
+    pathname_prefix?: string;
     check_auth_token: (token: string) => Promise<boolean>;
 }): Middleware {
     const {
-        pathname_prefix,
+        pathname_prefix = "/",
         Registry_Storage,
         check_auth_token,
         maxAge = 30 * 1000,

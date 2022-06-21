@@ -9,14 +9,18 @@ import { create_middleware } from "./create_middleware.ts";
 
 import { RegistryStorage } from "./RegistryStorage.ts";
 import { start_health_check } from "./start_health_check.ts";
-export function RegistryServer({
+export async function RegistryServer({
     check_auth_token,
     Registry_Storage,
     pathname_prefix,
-}: {
+    maxAge,
+    ...rest
+}: Partial<ServeInit> & {
     check_auth_token: (token: string) => Promise<boolean>;
     Registry_Storage: RegistryStorage;
-    pathname_prefix: string;
+    pathname_prefix?: string;
+    interval?: number;
+    maxAge?: number;
 }) {
     const handler = createHandler([
         logger,
@@ -26,14 +30,12 @@ export function RegistryServer({
             Registry_Storage: Registry_Storage,
             pathname_prefix,
             check_auth_token,
+            maxAge,
         }),
     ]);
-    async function start(options: Partial<ServeInit> = {}) {
-        const rest = options;
-        await Promise.all([
-            serve(handler, { ...rest }),
-            start_health_check({ Registry_Storage, ...rest }),
-        ]);
-    }
-    return start;
+
+    await Promise.all([
+        serve(handler, { ...rest }),
+        start_health_check({ Registry_Storage, ...rest }),
+    ]);
 }
