@@ -28,7 +28,7 @@ export async function RegistryServer({
     pathname_prefix?: string;
     interval?: number;
     maxAge?: number;
-}) {
+}): Promise<void> {
     const handler = createHandler([
         logger,
         conditional_get,
