@@ -6,19 +6,22 @@ export type RegistryStorage = {
     ): Promise<
         | undefined
         | null
-        | (ServerInformation & { expires: number; last_check: number })
+        | (ServerInformation & { expires: number; last_check_time: number })
     >;
     getAddressLastCheck(address: string): Promise<number>;
-    setAddressLastCheck(address: string, last_check: number): Promise<void>;
+    setAddressLastCheck(
+        address: string,
+        last_check_time: number,
+    ): Promise<void>;
     getAllServerInformation(): Promise<
-        (ServerInformation & { expires: number; last_check: number })[]
+        (ServerInformation & { expires: number; last_check_time: number })[]
     >;
     getAllServiceNames(): Promise<string[]>;
     getAllAddress({ name }: { name: string }): Promise<string[]>;
     upsertServerInformation(
         options: ServerInformation & {
             expires: number;
-            last_check?: number;
+            last_check_time?: number;
         },
     ): Promise<void>;
     deleteServerInformation: (address: string) => Promise<void>;

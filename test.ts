@@ -6,6 +6,7 @@ import {
     client_getAllAddress,
     client_getAllServerInformation,
     client_getAllServiceNames,
+    client_getServerInformation,
     client_register,
     client_start_heart_beat,
     client_unregister,
@@ -51,7 +52,7 @@ Deno.test("RegistryServer-registry-client", async () => {
                     console.log("AllServerInformation", AllServerInformation);
                     const info_hello_world = AllServerInformation[0];
                     assert(info_hello_world.expires > 0);
-                    assert(info_hello_world.last_check > 0);
+                    assert(info_hello_world.last_check_time > 0);
                     assertEquals(
                         info_hello_world.address,
                         "http://127.0.0.1:19500",
@@ -61,6 +62,17 @@ Deno.test("RegistryServer-registry-client", async () => {
                         info_hello_world.health_url,
                         "http://127.0.0.1:19500/health",
                     );
+                    await client_register({
+                        health_url: "http://127.0.0.1:19500/health",
+                        protocol: "http:",
+                        address: "http://127.0.0.1:19500",
+                        port,
+                        hostname: "127.0.0.1",
+                        name: "hello-world",
+                        base_url: "http://127.0.0.1:20500",
+                        signal,
+                        token: "01234567890",
+                    });
                     const o = client_start_heart_beat({
                         health_url: "http://127.0.0.1:19500/health",
                         protocol: "http:",
@@ -83,11 +95,45 @@ Deno.test("RegistryServer-registry-client", async () => {
                     });
                     console.log("AllAddress", AllAddress);
                     assertEquals(["http://127.0.0.1:19500"], AllAddress);
+                    const info_hello_world2 = await client_getServerInformation(
+                        { base_url, address },
+                    );
+                    console.log("info_hello_world2", info_hello_world2);
+                    assert(info_hello_world2);
+                    assert(info_hello_world2.expires > 0);
+                    assert(info_hello_world2.last_check_time > 0);
+                    assertEquals(
+                        info_hello_world2.address,
+                        "http://127.0.0.1:19500",
+                    );
+                    assertEquals(info_hello_world2.name, "hello-world");
+                    assertEquals(
+                        info_hello_world2.health_url,
+                        "http://127.0.0.1:19500/health",
+                    );
+                    await client_register({
+                        health_url: "http://127.0.0.1:19500/health",
+                        protocol: "http:",
+                        address: "http://127.0.0.1:19500",
+                        port,
+                        hostname: "127.0.0.1",
+                        name: "hello-world",
+                        base_url: "http://127.0.0.1:20500",
+                        signal,
+                        token: "01234567890",
+                    });
                     await client_unregister({
                         token,
                         base_url,
                         address: address,
                     });
+                    assertEquals(
+                        null,
+                        await client_getServerInformation({
+                            base_url,
+                            address,
+                        }),
+                    );
                     AllServerInformation = await client_getAllServerInformation(
                         {
                             base_url: "http://127.0.0.1:20500",
