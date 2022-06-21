@@ -44,7 +44,7 @@ Deno.test("RegistryServer-registry-client", async () => {
                         signal,
                         token: "01234567890",
                     });
-                    const AllServerInformation =
+                    let AllServerInformation =
                         await client_getAllServerInformation({
                             base_url: "http://127.0.0.1:20500",
                         });
@@ -72,12 +72,12 @@ Deno.test("RegistryServer-registry-client", async () => {
                         signal,
                         token: "01234567890",
                     });
-                    const AllServiceNames = await client_getAllServiceNames({
+                    let AllServiceNames = await client_getAllServiceNames({
                         base_url,
                     });
                     console.log("AllServiceNames", AllServiceNames);
                     assertEquals(["hello-world"], AllServiceNames);
-                    const AllAddress = await client_getAllAddress({
+                    let AllAddress = await client_getAllAddress({
                         base_url,
                         name: "hello-world",
                     });
@@ -88,6 +88,24 @@ Deno.test("RegistryServer-registry-client", async () => {
                         base_url,
                         address: address,
                     });
+                    AllServerInformation = await client_getAllServerInformation(
+                        {
+                            base_url: "http://127.0.0.1:20500",
+                        },
+                    );
+                    console.log("AllServerInformation", AllServerInformation);
+                    assertEquals(0, AllServerInformation.length);
+                    AllServiceNames = await client_getAllServiceNames({
+                        base_url,
+                    });
+                    console.log("AllServiceNames", AllServiceNames);
+                    assertEquals([], AllServiceNames);
+                    AllAddress = await client_getAllAddress({
+                        base_url,
+                        name: "hello-world",
+                    });
+                    console.log("AllAddress", AllAddress);
+                    assertEquals([], AllAddress);
                     ac.abort();
                     await o;
                 },
