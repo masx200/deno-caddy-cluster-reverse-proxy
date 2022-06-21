@@ -14,6 +14,7 @@ import {
 import {
     assert,
     assertEquals,
+    assertRejects,
 } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
 Deno.test("RegistryServer-registry-client", async () => {
@@ -34,6 +35,22 @@ Deno.test("RegistryServer-registry-client", async () => {
                     const address = "http://127.0.0.1:19500";
                     const token = "01234567890";
                     console.log("listening", { port, hostname });
+
+                    console.warn(
+                        await assertRejects(async () => {
+                            await client_register({
+                                health_url: "http://127.0.0.1:19500/health",
+                                protocol: "http:",
+                                address: "http://127.0.0.1:19500",
+                                port,
+                                hostname: "127.0.0.1",
+                                name: "hello-world",
+                                base_url: "http://127.0.0.1:20500",
+                                signal,
+                                token: "aaaaaaaaaaa",
+                            });
+                        }, "www-authenticate"),
+                    );
                     await client_register({
                         health_url: "http://127.0.0.1:19500/health",
                         protocol: "http:",
