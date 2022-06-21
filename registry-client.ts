@@ -28,6 +28,7 @@ export async function client_register(
         AbortSignalPromisify(signal),
         check_response_ok(response),
     ]);
+    await response.body?.cancel();
 }
 export async function client_start_heart_beat(
     options: ServerInformation & {
@@ -40,8 +41,16 @@ export async function client_start_heart_beat(
     const { signal, interval = 20 * 1000, ...rest } = options;
 
     while (true) {
-        await client_register({ ...rest, signal });
-        await delay(interval, { signal });
+        try {
+            await client_register({ ...rest, signal });
+            await delay(interval, { signal });
+        } catch (error) {
+            if (error instanceof DOMException) {
+                return;
+            } else {
+                throw error;
+            }
+        }
     }
 }
 export async function client_unregister(
@@ -61,6 +70,7 @@ export async function client_unregister(
     request.headers.set("Authorization", "Bearer " + token);
     const response = await fetch(request);
     await check_response_ok(response);
+    await response.body?.cancel();
 }
 export async function client_getAllServerInformation(options: {
     base_url: string;

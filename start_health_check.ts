@@ -11,7 +11,15 @@ export async function start_health_check(options: {
     const { Registry_Storage, signal, interval = 20 * 1000 } = options;
 
     while (true) {
-        await health_check_with_storage({ Registry_Storage, signal });
-        await delay(interval, { signal });
+        try {
+            await health_check_with_storage({ Registry_Storage, signal });
+            await delay(interval, { signal });
+        } catch (error) {
+            if (error instanceof DOMException) {
+                return;
+            } else {
+                throw error;
+            }
+        }
     }
 }

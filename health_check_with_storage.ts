@@ -29,6 +29,7 @@ export async function health_check_with_storage({
                     method: "HEAD",
                 });
                 assert(response.ok);
+                await response.body?.cancel();
                 // await Promise.race([
                 //     AbortSignalPromisify(signal),
                 //     response.text(),
@@ -43,6 +44,8 @@ export async function health_check_with_storage({
                     AbortSignalPromisify(signal),
                     Registry_Storage.deleteServerInformation(address),
                 ]);
+            } finally {
+                await Registry_Storage.setAddressLastCheck(address, now);
             }
         }),
     );

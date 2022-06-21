@@ -8,8 +8,12 @@ import {
     client_getAllServiceNames,
     client_register,
     client_start_heart_beat,
+    client_unregister,
 } from "./registry-client.ts";
-import { assertEquals } from "https://deno.land/std@0.144.0/testing/asserts.ts";
+import {
+    assert,
+    assertEquals,
+} from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
 Deno.test("RegistryServer-registry-client", async () => {
     const ac = new AbortController();
@@ -26,6 +30,8 @@ Deno.test("RegistryServer-registry-client", async () => {
                 signal,
                 async onListen({ port, hostname }) {
                     const base_url = "http://127.0.0.1:20500";
+                    const address = "http://127.0.0.1:19500";
+                    const token = "01234567890";
                     console.log("listening", { port, hostname });
                     await client_register({
                         health_url: "http://127.0.0.1:19500/health",
@@ -44,7 +50,8 @@ Deno.test("RegistryServer-registry-client", async () => {
                         });
                     console.log("AllServerInformation", AllServerInformation);
                     const info_hello_world = AllServerInformation[0];
-
+                    assert(info_hello_world.expires > 0);
+                    assert(info_hello_world.last_check > 0);
                     assertEquals(
                         info_hello_world.address,
                         "http://127.0.0.1:19500",
@@ -76,7 +83,12 @@ Deno.test("RegistryServer-registry-client", async () => {
                     });
                     console.log("AllAddress", AllAddress);
                     assertEquals(["http://127.0.0.1:19500"], AllAddress);
-
+                    await client_unregister({
+                        token,
+                        base_url,
+                        address: address,
+                    });
+                    ac.abort();
                     await o;
                 },
             });

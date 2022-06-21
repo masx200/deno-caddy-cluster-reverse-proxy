@@ -1,3 +1,4 @@
+import { health_check_with_storage } from "./health_check_with_storage.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
 import { ServerInformation } from "./ServerInformation.ts";
 
@@ -10,6 +11,7 @@ export async function register_with_storage(
     const { Registry_Storage, maxAge = 30 * 1000, ...rest } = options;
     const expires = Number(new Date()) + maxAge;
     await Registry_Storage.upsertServerInformation({ ...rest, expires });
+    await health_check_with_storage({ Registry_Storage });
 }
 export async function unregister_with_storage(
     options: { address: string } & {
