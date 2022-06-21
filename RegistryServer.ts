@@ -12,9 +12,11 @@ import { start_health_check } from "./start_health_check.ts";
 export function RegistryServer({
     check_auth_token,
     Registry_Storage,
+    pathname_prefix,
 }: {
     check_auth_token: (token: string) => Promise<boolean>;
     Registry_Storage: RegistryStorage;
+    pathname_prefix: string;
 }) {
     const handler = createHandler([
         logger,
@@ -22,7 +24,7 @@ export function RegistryServer({
         etag_builder,
         create_middleware({
             Registry_Storage: Registry_Storage,
-            pathname_prefix: "/",
+            pathname_prefix,
             check_auth_token,
         }),
     ]);
