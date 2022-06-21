@@ -9,6 +9,7 @@ import {
     createHandler,
     etag_builder,
     logger,
+    stream_etag,
 } from "https://deno.land/x/masx200_deno_http_middleware@1.2.3/mod.ts";
 import { create_middleware } from "./create_middleware.ts";
 
@@ -32,6 +33,7 @@ export async function RegistryServer({
         logger,
         conditional_get,
         etag_builder,
+        stream_etag(),
         create_middleware({
             Registry_Storage: Registry_Storage,
             pathname_prefix,
