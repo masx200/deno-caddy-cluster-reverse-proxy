@@ -1,6 +1,6 @@
 import { RegistryServer } from "./RegistryServer.ts";
 import { MemoryRegistryStorage } from "./MemoryRegistryStorage.ts";
-
+import { check_response_ok } from "./deps.ts";
 import { serve } from "https://deno.land/std@0.144.0/http/server.ts";
 import {
     client_getAllAddress,
@@ -36,8 +36,13 @@ Deno.test("RegistryServer-registry-client-one", async () => {
                     const address = "http://127.0.0.1:19500";
                     const token = "01234567890";
                     console.log("listening", { port, hostname });
+console.log(
+                        await assertRejects(async () => {
+const response_404=await fetch("http://127.0.0.1:20500/404")
 
-                    console.warn(
+check_response_ok(response_404)
+}, "Not Found"),
+                    console.log(
                         await assertRejects(async () => {
                             await client_register({
                                 health_url: "http://127.0.0.1:19500/health",
