@@ -36,20 +36,26 @@ Deno.test("RegistryServer-registry-client-one", async () => {
                     const address = "http://127.0.0.1:19500";
                     const token = "01234567890";
                     console.log("listening", { port, hostname });
-console.log(
+                    console.log(
                         await assertRejects(async () => {
-const response_404=await fetch("http://127.0.0.1:20500/404")
+                            const response_404 = await fetch(
+                                "http://127.0.0.1:20500/404",
+                            );
 
-await check_response_ok(response_404)
-}, "Not Found"));
+                            await check_response_ok(response_404);
+                        }, "Not Found"),
+                    );
 
-
-console.log(
+                    console.log(
                         await assertRejects(async () => {
-const response_404=await fetch("http://127.0.0.1:20500/",{method:"DELETE"})
+                            const response_404 = await fetch(
+                                "http://127.0.0.1:20500/",
+                                { method: "DELETE" },
+                            );
 
-await check_response_ok(response_404)
-}, "Not Found"));
+                            await check_response_ok(response_404);
+                        }, "Not Found"),
+                    );
 
                     console.log(
                         await assertRejects(async () => {
