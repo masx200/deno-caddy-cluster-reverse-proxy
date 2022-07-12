@@ -4,6 +4,8 @@ https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy/mod.ts
 
 适用于`Deno`的分布式微服务注册与发现服务器和客户端.
 
+# API
+
 `RegistryServer`:启动服务注册中心的服务器的函数,参数`check_auth_token`是检查身份令牌的函数,
 
 `RegistryStorage`:表示注册表存储的接口,可以是内存存储,也可以是分布式数据库存储,或者文件存储.
@@ -33,6 +35,8 @@ https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy/mod.ts
 `client_getAllAddress`:获得指定名称的所有微服务的网址.
 
 `MapWithExpires`:带有超时删除的功能的`Map`.
+
+# caddy
 
 关于使用`caddy`从服务注册中心获取服务的地址进行反向代理,可以查看这个讨论
 
