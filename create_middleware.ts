@@ -130,12 +130,12 @@ export function create_middleware(options: {
                         return BadRequestError(e);
                     }
 
-                    // if ("target" in data) {
-                    // const { target } = data;
+                    
                     if (target === "unregister") {
-                        if (typeof data.address === "string") {
+const { address } = data;
+                        if (typeof address === "string"&&is_url(address)) {
                             await unregister_with_storage({
-                                address: data.address,
+                                address: address,
                                 Registry_Storage,
                             });
                             return new Response();
@@ -160,7 +160,7 @@ export function create_middleware(options: {
                             "string" === typeof name &&
                             "string" === typeof health_url &&
                             // "number" === typeof health_status &&
-                            "number" === typeof port
+                            "number" === typeof port&&is_url(address)
                         ) {
                             await register_with_storage({
                                 address,
