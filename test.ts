@@ -232,9 +232,9 @@ Deno.test("RegistryServer-registry-client-two", async () => {
 console.warn(
 await assertRejects(async () => {
                 await client_register({
-                    health_url: "http://127.0.0.1:19500/health哈哈",
+                    health_url: "http嘻嘻嘻127.0.0.1:19500/health哈哈",
                     protocol: "http:",
-                    address: "http://127.0.0.1:19500/嘻嘻",
+                    address: "http嘻嘻嘻127.0.0.1:19500/嘻嘻",
                     port,
                     hostname: "127.0.0.1",
                     name: "hello-world",
