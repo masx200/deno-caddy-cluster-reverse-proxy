@@ -161,6 +161,7 @@ const { address } = data;
                             "string" === typeof health_url &&
                             // "number" === typeof health_status &&
                             "number" === typeof port&&is_url(address)
+&&is_url(health_url)
                         ) {
                             await register_with_storage({
                                 address,
