@@ -8,6 +8,8 @@ import {
     register_with_storage,
     unregister_with_storage,
 } from "./registry-server.ts";
+
+import {is_url}from "./is-url.ts"
 import { BadRequestTypeError } from "./BadRequestTypeError.ts";
 import { Unauthorized_Bearer_Authenticate } from "./Unauthorized_Bearer_Authenticate.ts";
 import { assert } from "https://deno.land/std@0.147.0/testing/asserts.ts";
@@ -69,7 +71,7 @@ export function create_middleware(options: {
 
                 if (target === "getServerInformation") {
                     const { address } = data;
-                    if ("string" === typeof address) {
+                    if ("string" === typeof address&&is_url(address)) {
                         return encode_json_response(
                             (await Registry_Storage.getServerInformation(
                                 address,
