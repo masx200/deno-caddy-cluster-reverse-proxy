@@ -9,7 +9,7 @@ import {
     unregister_with_storage,
 } from "./registry-server.ts";
 
-import {is_url}from "./is-url.ts"
+import { is_url } from "./is-url.ts";
 import { BadRequestTypeError } from "./BadRequestTypeError.ts";
 import { Unauthorized_Bearer_Authenticate } from "./Unauthorized_Bearer_Authenticate.ts";
 import { assert } from "https://deno.land/std@0.147.0/testing/asserts.ts";
@@ -71,7 +71,7 @@ export function create_middleware(options: {
 
                 if (target === "getServerInformation") {
                     const { address } = data;
-                    if ("string" === typeof address&&is_url(address)) {
+                    if ("string" === typeof address && is_url(address)) {
                         return encode_json_response(
                             (await Registry_Storage.getServerInformation(
                                 address,
@@ -130,10 +130,9 @@ export function create_middleware(options: {
                         return BadRequestError(e);
                     }
 
-                    
                     if (target === "unregister") {
-const { address } = data;
-                        if (typeof address === "string"&&is_url(address)) {
+                        const { address } = data;
+                        if (typeof address === "string" && is_url(address)) {
                             await unregister_with_storage({
                                 address: address,
                                 Registry_Storage,
@@ -160,8 +159,8 @@ const { address } = data;
                             "string" === typeof name &&
                             "string" === typeof health_url &&
                             // "number" === typeof health_status &&
-                            "number" === typeof port&&is_url(address)
-&&is_url(health_url)
+                            "number" === typeof port && is_url(address) &&
+                            is_url(health_url)
                         ) {
                             await register_with_storage({
                                 address,

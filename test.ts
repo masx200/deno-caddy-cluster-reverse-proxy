@@ -229,8 +229,8 @@ Deno.test("RegistryServer-registry-client-two", async () => {
                 });
             }, "www-authenticate"),
         );
-console.warn(
-await assertRejects(async () => {
+        console.warn(
+            await assertRejects(async () => {
                 await client_register({
                     health_url: "http嘻嘻嘻127.0.0.1:19500/health哈哈",
                     protocol: "http:",
