@@ -8,14 +8,11 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
         thisArg?: any,
         now = Number(new Date())
     ): void {
-        this.#clean_expires(now);
+        this.clean_expires(now);
         super.forEach(callbackfn, thisArg);
     }
-    get size() {
-        this.#clean_expires();
-        return super.size;
-    }
-    #clean_expires(now = Number(new Date())) {
+
+    clean_expires(now = Number(new Date())) {
         const keys = super.keys();
 
         for (const key of keys) {
@@ -44,15 +41,15 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
         return data;
     }
     keys(now = Number(new Date())) {
-        this.#clean_expires(now);
+        this.clean_expires(now);
         return super.keys();
     }
     values(now = Number(new Date())) {
-        this.#clean_expires(now);
+        this.clean_expires(now);
         return super.values();
     }
     entries(now = Number(new Date())): IterableIterator<[K, V]> {
-        this.#clean_expires(now);
+        this.clean_expires(now);
         return super.entries();
     }
 }
