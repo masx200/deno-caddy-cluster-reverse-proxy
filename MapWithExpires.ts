@@ -2,8 +2,31 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
     K,
     V
 > {
-    get(key: K) {
-        const now = Number(new Date());
+    get size() {
+        this.#clean_expires();
+        return super.size;
+    }
+    #clean_expires(now = Number(new Date())) {
+        const keys = super.keys();
+
+        for (const key of keys) {
+            const data = this.get(key);
+            if (data && data.expires < now) {
+                this.delete(key);
+                return;
+            }
+        }
+        return;
+    }
+    has(key: K, now = Number(new Date())) {
+        const data = super.get(key);
+        if (data && data.expires < now) {
+            this.delete(key);
+            return false;
+        }
+        return true;
+    }
+    get(key: K, now = Number(new Date())) {
         const data = super.get(key);
         if (data && data.expires < now) {
             this.delete(key);
@@ -11,18 +34,16 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
         }
         return data;
     }
-    values() {
-        const keys = Array.from(super.keys());
-        const now = Number(new Date());
-
-        const values = Array.from(super.values());
-        keys.forEach((key) => {
-            const data = this.get(key);
-            if (data && data.expires < now) {
-                this.delete(key);
-                return;
-            }
-        });
-        return values.filter((data) => data.expires > now)[Symbol.iterator]();
+    keys(now = Number(new Date())) {
+        this.#clean_expires(now);
+        return super.keys();
+    }
+    values(now = Number(new Date())) {
+        this.#clean_expires(now);
+        return super.values();
+    }
+    entries(now = Number(new Date())): IterableIterator<[K, V]> {
+        this.#clean_expires(now);
+        return super.entries();
     }
 }
