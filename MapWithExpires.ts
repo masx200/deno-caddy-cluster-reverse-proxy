@@ -16,8 +16,8 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
         const keys = super.keys();
 
         for (const key of keys) {
-            const data = this.get(key);
-            if (data && data.expires < now) {
+            const data = super.get(key);
+            if (data && data.expires <= now) {
                 this.delete(key);
             }
         }
@@ -25,7 +25,7 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
     }
     has(key: K, now = Number(new Date())) {
         const data = super.get(key);
-        if (data && data.expires < now) {
+        if (data && data.expires <= now) {
             this.delete(key);
             return false;
         }
@@ -33,7 +33,7 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
     }
     get(key: K, now = Number(new Date())) {
         const data = super.get(key);
-        if (data && data.expires < now) {
+        if (data && data.expires <= now) {
             this.delete(key);
             return;
         }
