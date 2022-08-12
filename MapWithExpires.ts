@@ -19,7 +19,6 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
             const data = this.get(key);
             if (data && data.expires < now) {
                 this.delete(key);
-                return;
             }
         }
         return;
