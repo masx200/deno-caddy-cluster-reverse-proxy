@@ -2,6 +2,15 @@ export class MapWithExpires<K, V extends { expires: number }> extends Map<
     K,
     V
 > {
+    forEach(
+        callbackfn: (value: V, key: K, map: Map<K, V>) => void,
+        // deno-lint-ignore no-explicit-any
+        thisArg?: any,
+        now = Number(new Date())
+    ): void {
+        this.#clean_expires(now);
+        super.forEach(callbackfn, thisArg);
+    }
     get size() {
         this.#clean_expires();
         return super.size;
