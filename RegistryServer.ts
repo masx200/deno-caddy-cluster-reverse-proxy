@@ -3,14 +3,14 @@ import {
     ServeInit,
     serveTls,
     ServeTlsInit,
-} from "https://deno.land/std@0.147.0/http/server.ts";
+} from "https://deno.land/std@0.158.0/http/server.ts";
 import {
     conditional_get,
     createHandler,
     etag_builder,
     logger,
     stream_etag,
-} from "https://deno.land/x/masx200_deno_http_middleware@1.2.5/mod.ts";
+} from "https://deno.land/x/masx200_deno_http_middleware@2.2.1/mod.ts";
 import { create_middleware } from "./create_middleware.ts";
 
 import { RegistryStorage } from "./RegistryStorage.ts";
