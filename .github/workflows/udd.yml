@@ -42,7 +42,7 @@ jobs:
         id: test
         continue-on-error: true
         run: |
-          deno test --unstable --allow-read --allow-write
+          deno test --unstable --allow-read --allow-write -A
       - name: Set commit status with outcome
         uses: Sibz/github-status-action@v1
         with:
