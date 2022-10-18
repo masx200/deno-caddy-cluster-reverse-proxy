@@ -1,5 +1,5 @@
 import { check_response_ok } from "./deps.ts";
-import { assert } from "https://deno.land/std@0.159.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.160.0/testing/asserts.ts";
 // import { encode_get_search_request } from "./encode_get_search_request.ts";
 import { decode_json_response } from "./decode_json_response.ts";
 
