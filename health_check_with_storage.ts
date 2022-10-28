@@ -1,5 +1,5 @@
 import throttle from "https://cdn.skypack.dev/lodash@4.17.21/throttle?dts";
-import { assert } from "https://deno.land/std@0.160.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.161.0/testing/asserts.ts";
 import { AbortSignalPromisify } from "./AbortSignalPromisify.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
 // const Registry_Storage_to_throttled_health_check = new WeakMap<
