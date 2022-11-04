@@ -1,4 +1,4 @@
-import { Handler, serve } from "https://deno.land/std@0.161.0/http/server.ts";
+import { Handler, serve } from "https://deno.land/std@0.162.0/http/server.ts";
 
 export function serve_and_on_listen({
     hostname,
