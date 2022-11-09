@@ -3,7 +3,7 @@ import {
     ServeInit,
     serveTls,
     ServeTlsInit,
-} from "https://deno.land/std@0.162.0/http/server.ts";
+} from "https://deno.land/std@0.163.0/http/server.ts";
 import {
     conditional_get,
     createHandler,
