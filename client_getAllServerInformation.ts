@@ -1,6 +1,6 @@
 import { check_response_ok } from "./deps.ts";
 import { ServerInformation } from "./ServerInformation.ts";
-import { assert } from "https://deno.land/std@0.163.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.164.0/testing/asserts.ts";
 // import { encode_get_search_request } from "./encode_get_search_request.ts";
 import { decode_json_response } from "./decode_json_response.ts";
 
