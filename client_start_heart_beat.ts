@@ -1,5 +1,5 @@
 import { ServerInformation } from "./ServerInformation.ts";
-import { delay } from "https://deno.land/std@0.165.0/async/delay.ts";
+import { delay } from "https://deno.land/std@0.166.0/async/delay.ts";
 import { client_register } from "./client_register.ts";
 
 export async function client_start_heart_beat(
