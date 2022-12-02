@@ -1,6 +1,6 @@
 import { RegistryStorage } from "./RegistryStorage.ts";
 
-import { delay } from "https://deno.land/std@0.166.0/async/delay.ts";
+import { delay } from "https://deno.land/std@0.167.0/async/delay.ts";
 import { health_check_with_storage } from "./health_check_with_storage.ts";
 
 export async function start_health_check(options: {
