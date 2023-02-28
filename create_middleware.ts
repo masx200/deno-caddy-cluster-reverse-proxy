@@ -1,4 +1,4 @@
-import { Middleware } from "https://deno.land/x/masx200_deno_http_middleware@2.2.1/mod.ts";
+import { Middleware } from "https://deno.land/x/masx200_deno_http_middleware@2.2.2/mod.ts";
 import { decode_get_search_request } from "./decode_get_search_request.ts";
 import { decode_post_body_request } from "./decode_post_body_request.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
