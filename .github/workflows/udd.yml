@@ -12,10 +12,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.26.0
+          deno-version: v1.31.1
+      - run: deno fmt
       - name: Update dependencies
-        run: |
-          deno run -A https://deno.land/x/udd/main.ts deps.ts '*.ts'
+        
+        run: deno run -A https://deno.land/x/udd/main.ts deps.ts *.ts '*/*.ts'  '*.json'
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         id: pr
@@ -42,7 +43,7 @@ jobs:
         id: test
         continue-on-error: true
         run: |
-          deno test --unstable --allow-read --allow-write -A
+          deno task test
       - name: Set commit status with outcome
         uses: Sibz/github-status-action@v1
         with:
