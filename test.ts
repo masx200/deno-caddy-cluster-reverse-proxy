@@ -1,7 +1,7 @@
 import { RegistryServer } from "./RegistryServer.ts";
 import { MemoryRegistryStorage } from "./MemoryRegistryStorage.ts";
 import { check_response_ok } from "./deps.ts";
-import { serve } from "https://deno.land/std@0.178.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.179.0/http/server.ts";
 import {
     client_getAllAddress,
     client_getAllServerInformation,
@@ -15,9 +15,9 @@ import {
     assert,
     assertEquals,
     assertRejects,
-} from "https://deno.land/std@0.178.0/testing/asserts.ts";
+} from "https://deno.land/std@0.179.0/testing/asserts.ts";
 import { serve_and_on_listen } from "./serve_and_on_listen.ts";
-import { handler } from "https://deno.land/x/masx200_hello_world_deno_deploy@1.1.6/mod.ts";
+import { handler } from "https://deno.land/x/masx200_hello_world_deno_deploy@1.1.7/mod.ts";
 Deno.test("RegistryServer-registry-client-one", async () => {
     const ac = new AbortController();
     const signal = ac.signal;
