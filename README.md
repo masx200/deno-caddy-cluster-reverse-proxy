@@ -4,6 +4,8 @@ https://deno.land/x/masx200_deno_caddy_cluster_reverse_proxy/mod.ts
 
 适用于`Deno`的分布式微服务注册与发现服务器和客户端.
 
+这是个实验性项目.
+
 # API
 
 `RegistryServer`:启动服务注册中心的服务器的函数,参数`check_auth_token`是检查身份令牌的函数,

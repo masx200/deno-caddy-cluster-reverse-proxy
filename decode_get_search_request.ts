@@ -3,5 +3,5 @@ export function decode_get_search_request<T>(
 ): T {
     const url = new URL(request.url);
 
-    return JSON.parse(url.search ? atob(url.search.slice(1)) : "") as T;
+    return Object.fromEntries(url.searchParams) as T;
 }
