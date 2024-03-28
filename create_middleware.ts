@@ -1,4 +1,4 @@
-import { Middleware } from "https://deno.land/x/masx200_deno_http_middleware@2.2.2/mod.ts";
+import { Middleware } from "https://deno.land/x/masx200_deno_http_middleware@3.3.0/mod.ts";
 import { decode_get_search_request } from "./decode_get_search_request.ts";
 import { decode_post_body_request } from "./decode_post_body_request.ts";
 import { RegistryStorage } from "./RegistryStorage.ts";
@@ -12,7 +12,7 @@ import {
 import { is_url } from "./is-url.ts";
 import { BadRequestTypeError } from "./BadRequestTypeError.ts";
 import { Unauthorized_Bearer_Authenticate } from "./Unauthorized_Bearer_Authenticate.ts";
-import { assert } from "https://deno.land/std@0.179.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.221.0/testing/asserts.ts";
 import { isPlainObject } from "./isPlainObject.ts";
 export function create_middleware(options: {
     Registry_Storage: RegistryStorage;
